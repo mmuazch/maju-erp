@@ -46,6 +46,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 #crumbs a:hover{color:var(--acc)} #crumbs b{color:var(--ink)}
 .top-right{display:flex;align-items:center;gap:10px}
 .co{font-weight:600}
+.branch-sw{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:0 8px;height:34px;background:#fff;color:var(--muted)}
+.branch-sw select{border:0;min-height:30px;padding:2px;max-width:230px;font-weight:600;color:var(--ink);box-shadow:none!important}
 .pill{background:var(--line2);border-radius:20px;padding:3px 10px;font-size:12.5px;color:var(--muted)}
 #main{padding:22px 24px 60px;max-width:1400px}
 .page-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
@@ -235,6 +237,7 @@ a.kpi.bank.sel{border-color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
   .grid-2,.grid-3,.doc-foot{grid-template-columns:1fr}
   #main{padding:16px}
   .co{display:none}
+  .branch-sw select{max-width:140px}
 }
 @media (max-width:600px){ .grid2{grid-template-columns:1fr} .search{min-width:0;flex:1} }
 
@@ -248,7 +251,7 @@ a.kpi.bank.sel{border-color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
    Maju ERP — core: utilities, storage, ledger
    All data lives in the browser (localStorage).
    ========================================================= */
-const APP = { name: 'Maju ERP', short: 'Maju ERP', version: '2.0.0' };
+const APP = { name: 'Maju ERP', short: 'Maju ERP', version: '2.1.0' };
 const STORE_KEY = 'majuErp.data.v1';
 
 const U = {
@@ -307,6 +310,7 @@ function defaultAccounts() {
   a('a2104', '2104', 'Accrued Expenses', 'Liability', 'g21');
   a('a2105', '2105', 'Goods Received Not Invoiced (GRNI)', 'Liability', 'g21');
   a('a2106', '2106', 'Customer Advances', 'Liability', 'g21');
+  a('a2107', '2107', 'Inter-Branch Current Account', 'Liability', 'g21');
   g('g22', '22', 'Non-Current Liabilities', 'Liability', 'g2');
   a('a2201', '2201', 'Long-Term Loans', 'Liability', 'g22');
   g('g3', '3', 'Equity', 'Equity');
@@ -342,16 +346,17 @@ function defaultData() {
     settings: {
       company: 'Workman Services', address: '', phone: '', email: '', ntn: '', strn: '',
       currency: 'PKR', fyStartMonth: 7, openingDate: U.fyStart(U.today(), 7), taxRate: 18,
-      invoiceNote: 'Thank you for your business.', lockDate: '',
+      invoiceNote: 'Thank you for your business.', lockDate: '', currentBranch: '',
       links: {
         cash: 'a1101', bank: 'a1102', ar: 'a1103', ap: 'a2101', inventory: 'a1104',
         inputTax: 'a1105', outputTax: 'a2102', sales: 'a4101', serviceRevenue: 'a4102',
-        cogs: 'a5101', stockAdj: 'a5102', purchaseExpense: 'a5210', openingEquity: 'a3103', retained: 'a3102', advanceTax: 'a1106', whtPayable: 'a2103', grni: 'a2105',
+        cogs: 'a5101', stockAdj: 'a5102', purchaseExpense: 'a5210', openingEquity: 'a3103', retained: 'a3102', advanceTax: 'a1106', whtPayable: 'a2103', grni: 'a2105', interBranch: 'a2107',
       },
     },
     counters: {},
     accounts: defaultAccounts(),
-    customers: [], suppliers: [], items: [], categories: [], warehouses: [{ id: 'w1', code: 'MAIN', name: 'Main Warehouse' }],
+    branches: [{ id: 'b1', code: 'HO', name: 'Head Office' }],
+    customers: [], suppliers: [], items: [], categories: [], warehouses: [{ id: 'w1', code: 'MAIN', name: 'Main Warehouse', branchId: 'b1' }],
     salesmen: [], projects: [], boms: [], assemblies: [],
     quotations: [], salesOrders: [], deliveryNotes: [], dnReturns: [], invoices: [], salesReturns: [], receipts: [],
     purchaseRequests: [], purchaseOrders: [], grns: [], bills: [], purchaseReturns: [], payments: [], expenses: [],
@@ -370,6 +375,9 @@ const DB = {
     for (const k in d) if (this.data[k] === undefined) this.data[k] = d[k];
     for (const k in d.settings.links) if (!this.data.settings.links[k]) this.data.settings.links[k] = d.settings.links[k];
     d.accounts.forEach(a => { if (!this.data.accounts.some(x => x.id === a.id) && Object.values(this.data.settings.links).includes(a.id)) this.data.accounts.push(a); });
+    if (!this.data.branches.length) this.data.branches.push({ id: 'b1', code: 'HO', name: 'Head Office' });
+    this.data.warehouses.forEach(w => { if (!w.branchId) w.branchId = this.data.branches[0].id; });
+    if (this.data.settings.currentBranch && !this.data.branches.some(b => b.id === this.data.settings.currentBranch)) this.data.settings.currentBranch = '';
     Ledger.invalidate();
   },
   save() {
@@ -381,6 +389,7 @@ const DB = {
   get(key, id) { return this.data[key].find(x => x.id === id); },
   upsert(key, obj) {
     const arr = this.data[key];
+    if (DOC_KEYS.includes(key) && !obj.branchId) obj.branchId = curBranch() || defBranch();
     if (!obj.id) { obj.id = U.uid(); obj.createdAt = Date.now(); arr.push(obj); }
     else { const i = arr.findIndex(x => x.id === obj.id); if (i >= 0) arr[i] = Object.assign({}, arr[i], obj); else arr.push(obj); }
     this.save();
@@ -434,10 +443,22 @@ function calcDoc(doc) {
    quantities and weighted-average costs are always consistent.
    ========================================================= */
 const TRANSIT = '__transit';
+const DOC_KEYS = ['quotations', 'salesOrders', 'deliveryNotes', 'dnReturns', 'invoices', 'salesReturns', 'receipts', 'purchaseRequests', 'purchaseOrders', 'grns', 'bills', 'purchaseReturns', 'payments', 'expenses', 'adjustments', 'consumptions', 'demands', 'issues', 'locReceipts', 'vouchers', 'journals', 'fundTransfers', 'taxPayments', 'assemblies'];
+const curBranch = () => DB.data?.settings?.currentBranch || '';
+const defBranch = () => DB.data?.branches?.[0]?.id || 'b1';
+const branchName = id => DB.data.branches.find(b => b.id === id)?.name || '';
+const whBranch = id => DB.data.warehouses.find(w => w.id === id)?.branchId || '';
+const defWh = () => (DB.data.warehouses.find(w => !curBranch() || w.branchId === curBranch()) || DB.data.warehouses[0])?.id;
+const inBranch = d => !curBranch() || (d.branchId || defBranch()) === curBranch();
 const Ledger = {
   _c: null,
-  invalidate() { this._c = null; },
-  get() { if (!this._c) this._c = this.build(); return this._c; },
+  invalidate() { this._c = null; this._f = null; },
+  all() { if (!this._c) this._c = this.build(); return this._c; },
+  get() {
+    const b = curBranch(); if (!b) return this.all();
+    if (!this._f || this._f.b !== b) { const a = this.all(); this._f = { b, v: { lines: a.lines.filter(l => l.branchId === b), moves: a.moves.filter(m => m.branchId === b), inv: a.inv } }; }
+    return this._f.v;
+  },
 
   build() {
     const db = DB.data, K = db.settings.links, OD = db.settings.openingDate;
@@ -445,18 +466,19 @@ const Ledger = {
     const inv = {};
     const st = id => inv[id] || (inv[id] = { qty: 0, value: 0 });
     const events = [];
-    const ev = (date, order, doc, fn) => events.push({ date: date || OD, order, t: doc.createdAt || 0, fn });
+    const DB0 = defBranch(); let curB = DB0;
+    const ev = (date, order, doc, fn, br) => events.push({ date: date || OD, order, t: doc.createdAt || 0, fn: () => { curB = br || doc.branchId || DB0; fn(); } });
     const list = k => db[k] || [];
 
     const post = (h, ls) => {
       ls.forEach(l => {
         const dr = U.r2(U.num(l.dr)), cr = U.r2(U.num(l.cr));
         if (!l.a || (Math.abs(dr) < 0.005 && Math.abs(cr) < 0.005)) return;
-        lines.push({ date: h.date, no: h.no, type: h.type, docId: h.docId, route: h.route, memo: l.memo || h.memo || '', accountId: l.a, debit: dr, credit: cr, partyType: l.pt || '', partyId: l.pid || '', projectId: l.prj || h.projectId || '' });
+        lines.push({ date: h.date, no: h.no, type: h.type, docId: h.docId, route: h.route, memo: l.memo || h.memo || '', accountId: l.a, debit: dr, credit: cr, partyType: l.pt || '', partyId: l.pid || '', projectId: l.prj || h.projectId || '', branchId: l.br || curB });
       });
     };
     const avg = id => { const s = st(id); return s.qty > 0.0000001 ? s.value / s.qty : U.num(item(id)?.costPrice); };
-    const mv = (h, itemId, whId, qty, cost, extra, value) => moves.push(Object.assign({ date: h.date, no: h.no, type: h.type, docId: h.docId, route: h.route, itemId, warehouseId: whId, qty, cost, value: value ?? U.r2(qty * cost), party: h.party || '' }, extra || {}));
+    const mv = (h, itemId, whId, qty, cost, extra, value) => moves.push(Object.assign({ date: h.date, no: h.no, type: h.type, docId: h.docId, route: h.route, itemId, warehouseId: whId, qty, cost, value: value ?? U.r2(qty * cost), party: h.party || '', branchId: curB }, extra || {}));
     const mIn = (h, itemId, whId, qty, unitCost) => { const s = st(itemId); const v = U.r2(qty * unitCost); s.qty += qty; s.value += v; mv(h, itemId, whId, qty, unitCost, null, v); return v; };
     const mOut = (h, itemId, whId, qty) => {
       const s = st(itemId); const c = avg(itemId); const v = Math.abs(s.qty - qty) < 1e-7 && s.qty > 0 ? U.r2(s.value) : U.r2(qty * c);
@@ -484,7 +506,7 @@ const Ledger = {
       const c = U.num(it.openingCost || it.costPrice);
       const v = mIn(h, it.id, it.openingWarehouse || db.warehouses[0]?.id, q, c);
       post(h, [{ a: K.inventory, dr: v }, { a: K.openingEquity, cr: v }]);
-    }); });
+    }, whBranch(it.openingWarehouse || db.warehouses[0]?.id)); });
 
     // ---------- stock IN documents (order 1) ----------
     list('grns').forEach(d => ev(d.date, 1, d, () => {
@@ -550,15 +572,21 @@ const Ledger = {
       else if (gain < 0) post(h, [{ a: ac, dr: -gain }, { a: K.inventory, cr: -gain }]);
     }));
     // ---------- location transfers (order 3) ----------
-    list('issues').forEach(d => ev(d.date, 3, d, () => {
+    list('issues').forEach(d => ev(d.date, 3, d, () => { curB = whBranch(d.fromWarehouseId) || DB0;
       const h = { date: d.date, no: d.no, type: 'Issue to Location', docId: d.id, route: '#/issues/' + d.id };
       d.lines.forEach(l => { const q = U.num(l.qty); if (!l.itemId || !q || !isStock(l.itemId)) return; const c = avg(l.itemId);
         mv(h, l.itemId, d.fromWarehouseId, -q, c, { transfer: true }); mv(h, l.itemId, TRANSIT, q, c, { transfer: true, dest: d.toWarehouseId }); });
     }));
     list('locReceipts').forEach(d => ev(d.date, 3.5, d, () => {
       const h = { date: d.date, no: d.no, type: 'Receipt in Location', docId: d.id, route: '#/loc-receipts/' + d.id };
+      const iss = list('issues').find(x => x.id === d.issueId), fromB = whBranch(iss?.fromWarehouseId) || DB0, toB = whBranch(d.toWarehouseId) || DB0;
+      let val = 0;
       d.lines.forEach(l => { const q = U.num(l.qty); if (!l.itemId || !q || !isStock(l.itemId)) return; const c = avg(l.itemId);
-        mv(h, l.itemId, TRANSIT, -q, c, { transfer: true }); mv(h, l.itemId, d.toWarehouseId, q, c, { transfer: true }); });
+        curB = fromB; mv(h, l.itemId, TRANSIT, -q, c, { transfer: true }); curB = toB; mv(h, l.itemId, d.toWarehouseId, q, c, { transfer: true }); val += U.r2(q * c); });
+      if (fromB !== toB && val) {
+        curB = fromB; post(Object.assign({}, h, { memo: 'Stock sent to ' + branchName(toB) }), [{ a: K.interBranch, dr: val }, { a: K.inventory, cr: val }]);
+        curB = toB; post(Object.assign({}, h, { memo: 'Stock received from ' + branchName(fromB) }), [{ a: K.inventory, dr: val }, { a: K.interBranch, cr: val }]);
+      }
     }));
     // ---------- stock OUT documents (order 4) ----------
     list('deliveryNotes').forEach(d => ev(d.date, 4, d, () => {
@@ -768,7 +796,7 @@ const NAV = [
   { label: 'Reports', icon: 'chart', href: '#/reports' },
   { section: 'Settings' },
   { label: 'Settings', icon: 'gear', children: [
-    ['Company Profile', '#/settings/company'], ['Account Linking', '#/settings/links'], ['Backup & Restore', '#/settings/backup']] },
+    ['Company Profile', '#/settings/company'], ['Branches', '#/branches'], ['Account Linking', '#/settings/links'], ['Backup & Restore', '#/settings/backup']] },
 ];
 
 function renderShell() {
@@ -782,7 +810,7 @@ function renderShell() {
     <header id="topbar">
       <button class="icon-btn" id="menuBtn" aria-label="Menu">${icon('menu')}</button>
       <div id="crumbs"></div>
-      <div class="top-right"><span class="co" id="coName"></span><span class="pill">${U.fdate(U.today())}</span></div>
+      <div class="top-right"><label class="branch-sw" title="Switch branch">${icon('bank')}<select id="brSel"></select></label><span class="co" id="coName"></span><span class="pill">${U.fdate(U.today())}</span></div>
     </header>
     <main id="main"></main>
   </div>
@@ -802,6 +830,11 @@ function renderNav() {
   }).join('');
   $$('#nav .nav-group > button').forEach(b => b.onclick = () => b.parentElement.classList.toggle('open'));
   $('#coName').textContent = DB.data.settings.company;
+  const bs = $('#brSel');
+  if (bs) {
+    bs.innerHTML = `<option value="">All branches (consolidated)</option>` + DB.data.branches.map(b => `<option value="${b.id}" ${b.id === curBranch() ? 'selected' : ''}>Branch: ${U.esc(b.name)}</option>`).join('');
+    bs.onchange = () => { DB.data.settings.currentBranch = bs.value; DB.save(); toast(bs.value ? 'Switched to ' + branchName(bs.value) : 'Showing all branches'); navigate(); };
+  }
 }
 
 /* ---------------- Router ---------------- */
@@ -854,7 +887,9 @@ const accOpts = (sel, list) => opts((list || leafAccounts()).map(a => [a.id, `${
 const custOpts = sel => opts(DB.data.customers.slice().sort((a, b) => a.name.localeCompare(b.name)).map(c => [c.id, c.name]), sel);
 const suppOpts = sel => opts(DB.data.suppliers.slice().sort((a, b) => a.name.localeCompare(b.name)).map(c => [c.id, c.name]), sel);
 const itemOpts = sel => opts(DB.data.items.slice().sort((a, b) => a.name.localeCompare(b.name)).map(i => [i.id, `${i.code ? i.code + ' · ' : ''}${i.name}`]), sel);
-const whOpts = (sel, blank = null) => opts(DB.data.warehouses.map(w => [w.id, w.name]), sel, blank);
+const whOpts = (sel, blank = null) => opts(DB.data.warehouses.filter(w => !curBranch() || w.branchId === curBranch() || w.id === sel).map(w => [w.id, w.name + (DB.data.branches.length > 1 && !curBranch() ? ' · ' + branchName(w.branchId) : '')]), sel, blank);
+const branchOpts = sel => opts(DB.data.branches.map(b => [b.id, `${b.code} · ${b.name}`]), sel || curBranch() || defBranch(), null);
+const branchField = { name: 'branchId', label: 'Branch', type: 'select', options: v => branchOpts(v) };
 
 function field(f, v) {
   const id = 'f_' + f.name, req = f.required ? 'required' : '';
@@ -894,7 +929,8 @@ function bindRowLinks(root = document) {
 }
 function printHeader(title, sub) {
   const s = DB.data.settings;
-  return `<div class="print-head"><div><h2>${U.esc(s.company)}</h2><div>${U.esc(s.address)}</div><div>${[s.phone, s.email].filter(Boolean).map(U.esc).join(' · ')}</div>${s.ntn ? `<div>NTN: ${U.esc(s.ntn)}${s.strn ? ' · STRN: ' + U.esc(s.strn) : ''}</div>` : ''}</div><div class="ph-right"><h2>${U.esc(title)}</h2>${sub ? `<div>${sub}</div>` : ''}</div></div>`;
+  const br = DB.data.branches.find(b => b.id === (curBranch() || '')) ;
+  return `<div class="print-head"><div><h2>${U.esc(s.company)}</h2>${br ? `<div><b>${U.esc(br.name)}</b></div>` : ''}<div>${U.esc(br?.address || s.address)}</div><div>${[s.phone, s.email].filter(Boolean).map(U.esc).join(' · ')}</div>${s.ntn ? `<div>NTN: ${U.esc(s.ntn)}${s.strn ? ' · STRN: ' + U.esc(s.strn) : ''}</div>` : ''}</div><div class="ph-right"><h2>${U.esc(title)}</h2>${sub ? `<div>${sub}</div>` : ''}</div></div>`;
 }
 
 </script>
@@ -1013,7 +1049,7 @@ route('/items', () => {
       { label: 'Avg cost', cls: 'num', get: r => r.type === 'Service' ? '—' : U.money(stock[r.id]?.qty > 0 ? stock[r.id].value / stock[r.id].qty : r.costPrice) },
       { label: 'Stock value', cls: 'num', get: r => r.type === 'Service' ? '—' : U.money(stock[r.id]?.value || 0) },
     ],
-    defaults: () => ({ type: 'Stock', unit: 'Pcs', openingWarehouse: DB.data.warehouses[0]?.id }),
+    defaults: () => ({ type: 'Stock', unit: 'Pcs', openingWarehouse: defWh() }),
     fields: [
       { name: 'code', label: 'Item code', placeholder: 'Auto' },
       { name: 'name', label: 'Item name', required: true },
@@ -1043,11 +1079,11 @@ route('/warehouses', () => {
   const stockBy = id => U.sum(Object.values(R.stock(null, id)), s => s.value);
   masterPage({
     key: 'warehouses', title: 'Warehouses', singular: 'Warehouse',
-    columns: [{ label: 'Code', get: r => r.code }, { label: 'Name', html: r => `<b>${U.esc(r.name)}</b>` }, { label: 'Location', get: r => r.location }, { label: 'Stock value', cls: 'num', get: r => U.money(stockBy(r.id)) }],
-    fields: [{ name: 'code', label: 'Code', required: true }, { name: 'name', label: 'Name', required: true }, { name: 'location', label: 'Location', wide: true }],
+    columns: [{ label: 'Code', get: r => r.code }, { label: 'Name', html: r => `<b>${U.esc(r.name)}</b>` }, { label: 'Branch', get: r => branchName(r.branchId) }, { label: 'Location', get: r => r.location }, { label: 'Stock value', cls: 'num', get: r => U.money(stockBy(r.id)) }],
+    fields: [{ name: 'code', label: 'Code', required: true }, { name: 'name', label: 'Name', required: true }, { name: 'branchId', label: 'Branch', type: 'select', required: true, options: v => opts(DB.data.branches.map(b => [b.id, b.name]), v || curBranch() || defBranch(), null) }, { name: 'location', label: 'Location', wide: true }],
     validate: r => uniqueCode('warehouses', r),
     cannotDelete: r => DB.data.warehouses.length <= 1 ? 'At least one warehouse is required' :
-      (Ledger.get().moves.some(m => m.warehouseId === r.id) || DB.data.items.some(i => i.openingWarehouse === r.id) ? 'This warehouse has stock movements and cannot be deleted' : null),
+      (Ledger.all().moves.some(m => m.warehouseId === r.id) || DB.data.items.some(i => i.openingWarehouse === r.id) ? 'This warehouse has stock movements and cannot be deleted' : null),
   });
 });
 
@@ -1086,7 +1122,7 @@ route('/accounts', () => {
       const v = readForm(f);
       if (!v.code || !v.name) return toast('Code and name are required', 'err');
       if (DB.data.accounts.some(a => a.code === v.code && a.id !== rec.id)) return toast('Account code already exists', 'err');
-      const hasLines = !isNew && R.lines({ accounts: [rec.id] }).length;
+      const hasLines = !isNew && Ledger.all().lines.some(l => l.accountId === rec.id);
       if (v.isGroup && hasLines) return toast('This account has postings; it cannot become a group', 'err');
       if (v.isGroup && linked.has(rec.id)) return toast('Linked accounts cannot be groups', 'err');
       if (!v.isGroup && !isNew && DB.data.accounts.some(a => a.parentId === rec.id)) return toast('This account has sub-accounts; it must stay a group', 'err');
@@ -1096,7 +1132,7 @@ route('/accounts', () => {
     if (!isNew) $('#aDel', m).onclick = () => {
       if (linked.has(rec.id)) return toast('This account is linked in Account Linking settings', 'err');
       if (DB.data.accounts.some(a => a.parentId === rec.id)) return toast('Delete or move its sub-accounts first', 'err');
-      if (R.lines({ accounts: [rec.id] }).length) return toast('This account has postings and cannot be deleted', 'err');
+      if (Ledger.all().lines.some(l => l.accountId === rec.id)) return toast('This account has postings and cannot be deleted', 'err');
       confirmBox(`Delete account "${rec.name}"?`, () => { DB.remove('accounts', rec.id); render(); });
     };
   };
@@ -1195,7 +1231,7 @@ route('/settings/backup', () => {
 function docList(cfg) {
   const render = () => {
     const f = { from: $('#dFrom').value, to: $('#dTo').value, q: $('#dQ').value.toLowerCase() };
-    let rows = DB.data[cfg.key].filter(d => (!f.from || d.date >= f.from) && (!f.to || d.date <= f.to));
+    let rows = DB.data[cfg.key].filter(d => inBranch(d) && (!f.from || d.date >= f.from) && (!f.to || d.date <= f.to));
     if (f.q) rows = rows.filter(d => (d.no + ' ' + (cfg.partyName ? cfg.partyName(d) : '') + ' ' + (d.memo || d.notes || d.ref || '')).toLowerCase().includes(f.q));
     rows.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
     $('#dList').innerHTML = table(cfg.columns, rows, { rowAttr: d => `data-href="#/${cfg.path}/${d.id}" class="clickable"`, empty: `No ${cfg.title.toLowerCase()} in this period.`,
@@ -1218,7 +1254,9 @@ function docEditor(cfg, id, qs = {}) {
   const doc = existing ? JSON.parse(JSON.stringify(existing)) : cfg.blank(qs);
   if (!doc.lines || !doc.lines.length) doc.lines = [cfg.newLine(doc)];
 
-  const head = () => cfg.head.map(f => field(f, doc[f.name])).join('');
+  if (!doc.branchId) doc.branchId = curBranch() || defBranch();
+  const headFields = DB.data.branches.length > 1 ? [branchField, ...cfg.head] : cfg.head;
+  const head = () => headFields.map(f => field(f, doc[f.name])).join('');
   const lineRow = (l, i) => `<tr data-line="${i}">${cfg.cols.map(c => {
     if (c.type === 'calc') return `<td class="num calc" data-calc="${c.name}">${c.calc(l, doc)}</td>`;
     if (c.type === 'select') return `<td class="${c.cls || ''}"><select data-k="${c.name}">${c.options(l, doc)}</select>${c.sub ? `<div class="sub">${c.sub(l, doc)}</div>` : ''}</td>`;
@@ -1347,7 +1385,7 @@ function tradeCfg(kind) {
   return Object.assign(T, {
     pk, PT, head, cols,
     blank: qs => {
-      const d = { date: U.today(), taxRate: T.noTax ? 0 : DB.data.settings.taxRate, warehouseId: DB.data.warehouses[0]?.id, lines: [] };
+      const d = { date: U.today(), taxRate: T.noTax ? 0 : DB.data.settings.taxRate, warehouseId: defWh(), lines: [] };
       if (qs.from && qs.src && TK[qs.src]) {
         const src = DB.get(TK[qs.src].key, qs.from);
         if (src) {
@@ -1446,7 +1484,7 @@ function moneyDocs(S) {
   const key = S ? 'receipts' : 'payments', pk = S ? 'customerId' : 'supplierId', PT = S ? 'C' : 'S';
   const title = S ? 'Payments Received' : 'Payments Made', singular = S ? 'Payment Received' : 'Payment Made';
   const render = () => {
-    const rows = DB.data[key].slice().sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+    const rows = DB.data[key].filter(inBranch).sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
     $('#mList').innerHTML = table([
       { label: 'Number', html: d => `<b>${U.esc(d.no)}</b>` }, { label: 'Date', get: d => U.fdate(d.date) },
       { label: S ? 'Customer' : 'Supplier', get: d => partyName(PT, d[pk]) }, { label: S ? 'Received in' : 'Paid from', get: d => acc(d.accountId)?.name },
@@ -1460,6 +1498,7 @@ function moneyDocs(S) {
     const m = modal((isNew ? 'New ' : 'Edit ') + singular + (rec.no ? ' ' + rec.no : ''), `<form id="rForm" class="grid2">
       ${field({ name: pk, label: S ? 'Customer' : 'Supplier', type: 'select', required: true, options: v => S ? custOpts(v) : suppOpts(v) }, rec[pk])}
       ${field({ name: 'date', label: 'Date', type: 'date', required: true }, rec.date)}
+      ${DB.data.branches.length > 1 ? field(branchField, rec.branchId) : ''}
       ${field({ name: 'accountId', label: S ? 'Received in (cash/bank)' : 'Paid from (cash/bank)', type: 'select', required: true, options: v => accOpts(v, cashBankAccounts()) }, rec.accountId)}
       ${field({ name: 'amount', label: 'Amount', type: 'number', required: true }, rec.amount)}
       ${field({ name: 'wht', label: S ? 'Income tax withheld by customer' : 'Withholding tax deducted', type: 'number', hint: S ? 'Credited to the customer along with the amount' : 'Settles the bill but is payable to tax authority' }, rec.wht)}
@@ -1569,7 +1608,7 @@ route('/journals/:id', id => docEditor(journalCfg, id));
 const stockItemOpts = sel => opts(DB.data.items.filter(i => i.type !== 'Service').sort((a, b) => a.name.localeCompare(b.name)).map(i => [i.id, `${i.code ? i.code + ' · ' : ''}${i.name}`]), sel);
 const adjCfg = {
   key: 'adjustments', path: 'adjustments', title: 'Inventory Adjustments', singular: 'Inventory Adjustment', prefix: 'ADJ',
-  blank: () => ({ date: U.today(), warehouseId: DB.data.warehouses[0]?.id, lines: [] }),
+  blank: () => ({ date: U.today(), warehouseId: defWh(), lines: [] }),
   newLine: () => ({ itemId: '', qty: '', cost: '' }),
   keepLine: l => l.itemId && U.num(l.qty),
   head: [{ name: 'date', label: 'Date', type: 'date', required: true }, { name: 'warehouseId', label: 'Warehouse', type: 'select', options: v => whOpts(v) }, { name: 'reason', label: 'Reason', placeholder: 'Stock count, damage, expiry…' }, { name: 'accountId', label: 'Adjustment account', type: 'select', options: v => accOpts(v || L().stockAdj) }],
@@ -1611,7 +1650,7 @@ const C_NO = { label: 'Number', html: d => `<b>${U.esc(d.no)}</b>` }, C_DATE = {
 /* ---------- Inventory consumption ---------- */
 const consCfg = {
   key: 'consumptions', path: 'consumptions', title: 'Inventory Consumption', singular: 'Consumption', prefix: 'CON',
-  blank: () => ({ date: U.today(), warehouseId: DB.data.warehouses[0]?.id, accountId: L().purchaseExpense, lines: [] }),
+  blank: () => ({ date: U.today(), warehouseId: defWh(), accountId: L().purchaseExpense, lines: [] }),
   newLine: () => ({ itemId: '', qty: '' }), keepLine: l => l.itemId && U.num(l.qty) > 0,
   head: [{ name: 'date', label: 'Date', type: 'date', required: true }, { name: 'warehouseId', label: 'Location / warehouse', type: 'select', options: v => whOpts(v) },
     { name: 'accountId', label: 'Charge to expense account', type: 'select', options: v => accOpts(v, leafAccounts().filter(a => a.type === 'Expense' || a.type === 'Asset')) },
@@ -1633,7 +1672,7 @@ const issueStatus = iss => { const p = pendingOfIssue(iss), pend = U.sum(p, x =>
 
 const demandCfg = {
   key: 'demands', path: 'demands', title: 'Demand', singular: 'Demand', prefix: 'DEM',
-  blank: () => ({ date: U.today(), toWarehouseId: DB.data.warehouses[1]?.id || DB.data.warehouses[0]?.id, fromWarehouseId: DB.data.warehouses[0]?.id, lines: [] }),
+  blank: () => ({ date: U.today(), toWarehouseId: DB.data.warehouses[1]?.id || defWh(), fromWarehouseId: defWh(), lines: [] }),
   newLine: () => ({ itemId: '', qty: '' }), keepLine: l => l.itemId && U.num(l.qty) > 0,
   head: [{ name: 'date', label: 'Date', type: 'date', required: true }, { name: 'toWarehouseId', label: 'Demanding location', type: 'select', options: v => whOpts(v, '— Select —') },
     { name: 'fromWarehouseId', label: 'Supply from location', type: 'select', options: v => whOpts(v, '— Select —') }, { name: 'requiredBy', label: 'Required by', type: 'date' }, { name: 'requestedBy', label: 'Requested by' }],
@@ -1647,7 +1686,7 @@ route('/demands/:id', id => docEditor(demandCfg, id));
 const issueCfg = {
   key: 'issues', path: 'issues', title: 'Issue to Location', singular: 'Issue to Location', prefix: 'ITL',
   blank: qs => {
-    const d = { date: U.today(), fromWarehouseId: DB.data.warehouses[0]?.id, toWarehouseId: DB.data.warehouses[1]?.id || '', lines: [] };
+    const d = { date: U.today(), fromWarehouseId: defWh(), toWarehouseId: DB.data.warehouses[1]?.id || '', lines: [] };
     const dem = qs.demand && DB.get('demands', qs.demand);
     if (dem) Object.assign(d, { fromId: dem.id, fromNo: dem.no, fromWarehouseId: dem.fromWarehouseId || d.fromWarehouseId, toWarehouseId: dem.toWarehouseId, lines: JSON.parse(JSON.stringify(dem.lines)) });
     return d;
@@ -1725,13 +1764,13 @@ route('/cash-banks', () => {
     `<button class="btn primary" id="baNew">${icon('plus')} Add bank / cash account</button>`);
   bindRowLinks();
   const renderFt = () => { $('#ftList').innerHTML = table([C_NO, C_DATE, { label: 'From', get: d => acc(d.fromAccountId)?.name }, { label: 'To', get: d => acc(d.toAccountId)?.name }, { label: 'Charges', cls: 'num', get: d => U.money(d.charges, true) }, { label: 'Amount', cls: 'num', get: d => U.money(d.amount) }],
-    DB.data.fundTransfers.slice().sort((a, b) => b.date.localeCompare(a.date)), { rowAttr: d => `data-ft="${d.id}" class="clickable"`, empty: 'No transfers yet.' }); $$('[data-ft]').forEach(tr => tr.onclick = () => ft(DB.get('fundTransfers', tr.dataset.ft))); };
+    DB.data.fundTransfers.filter(inBranch).sort((a, b) => b.date.localeCompare(a.date)), { rowAttr: d => `data-ft="${d.id}" class="clickable"`, empty: 'No transfers yet.' }); $$('[data-ft]').forEach(tr => tr.onclick = () => ft(DB.get('fundTransfers', tr.dataset.ft))); };
   const ft = rec => {
     const isNew = !rec; rec = rec ? Object.assign({}, rec) : { date: U.today(), fromAccountId: accs[0]?.id, toAccountId: accs[1]?.id };
     const m = modal(isNew ? 'Transfer funds' : 'Fund transfer ' + rec.no, `<form id="ftF" class="grid2">
       ${field({ name: 'date', label: 'Date', type: 'date', required: true }, rec.date)}${field({ name: 'amount', label: 'Amount', type: 'number', required: true }, rec.amount)}
       ${field({ name: 'fromAccountId', label: 'From account', type: 'select', options: v => accOpts(v, accs) }, rec.fromAccountId)}${field({ name: 'toAccountId', label: 'To account', type: 'select', options: v => accOpts(v, accs) }, rec.toAccountId)}
-      ${field({ name: 'charges', label: 'Bank charges', type: 'number' }, rec.charges)}${field({ name: 'ref', label: 'Cheque / reference' }, rec.ref)}${field({ name: 'memo', label: 'Narration', wide: true }, rec.memo)}</form>`,
+      ${field({ name: 'charges', label: 'Bank charges', type: 'number' }, rec.charges)}${DB.data.branches.length > 1 ? field(branchField, rec.branchId) : ''}${field({ name: 'ref', label: 'Cheque / reference' }, rec.ref)}${field({ name: 'memo', label: 'Narration', wide: true }, rec.memo)}</form>`,
       `${!isNew ? `<button class="btn danger ghost" id="ftDel">${icon('trash')} Delete</button>` : ''}<span class="sp"></span><button class="btn" data-close>Cancel</button><button class="btn primary" id="ftSave">Save</button>`);
     $('#ftSave', m).onclick = () => {
       const v = readForm($('#ftF')); v.amount = U.num(v.amount); v.charges = U.num(v.charges);
@@ -1761,12 +1800,12 @@ route('/cash-banks', () => {
 route('/tax-payments', () => {
   const taxAccs = () => leafAccounts().filter(a => a.type === 'Liability' && (a.id === L().outputTax || a.id === L().whtPayable || /tax/i.test(a.name)));
   const render = () => { $('#tpList').innerHTML = table([C_NO, C_DATE, { label: 'Tax', get: d => acc(d.taxAccountId)?.name }, { label: 'Period', get: d => d.period }, { label: 'Paid from', get: d => acc(d.accountId)?.name }, { label: 'CPR / PSID', get: d => d.ref }, { label: 'Amount', cls: 'num', get: d => U.money(d.amount) }],
-    DB.data.taxPayments.slice().sort((a, b) => b.date.localeCompare(a.date)), { rowAttr: d => `data-id="${d.id}" class="clickable"`, empty: 'No tax payments recorded.' }); $$('#tpList [data-id]').forEach(tr => tr.onclick = () => edit(DB.get('taxPayments', tr.dataset.id))); };
+    DB.data.taxPayments.filter(inBranch).sort((a, b) => b.date.localeCompare(a.date)), { rowAttr: d => `data-id="${d.id}" class="clickable"`, empty: 'No tax payments recorded.' }); $$('#tpList [data-id]').forEach(tr => tr.onclick = () => edit(DB.get('taxPayments', tr.dataset.id))); };
   const edit = rec => {
     const isNew = !rec; rec = rec ? Object.assign({}, rec) : { date: U.today(), taxAccountId: L().outputTax, accountId: cashBankAccounts().find(a => a.id === L().bank)?.id || cashBankAccounts()[0]?.id };
     const m = modal(isNew ? 'Record tax payment' : 'Tax payment ' + rec.no, `<form id="tpF" class="grid2">${field({ name: 'date', label: 'Date', type: 'date', required: true }, rec.date)}${field({ name: 'taxAccountId', label: 'Tax liability', type: 'select', options: v => accOpts(v, taxAccs()) }, rec.taxAccountId)}
       ${field({ name: 'period', label: 'Tax period', placeholder: 'e.g. Oct-2026' }, rec.period)}${field({ name: 'accountId', label: 'Paid from', type: 'select', options: v => accOpts(v, cashBankAccounts()) }, rec.accountId)}
-      ${field({ name: 'amount', label: 'Amount', type: 'number', required: true }, rec.amount)}${field({ name: 'ref', label: 'CPR / PSID no.' }, rec.ref)}</form><div class="info">Current balance payable: <b id="tpBal"></b></div>`,
+      ${field({ name: 'amount', label: 'Amount', type: 'number', required: true }, rec.amount)}${field({ name: 'ref', label: 'CPR / PSID no.' }, rec.ref)}${DB.data.branches.length > 1 ? field(branchField, rec.branchId) : ''}</form><div class="info">Current balance payable: <b id="tpBal"></b></div>`,
       `${!isNew ? `<button class="btn danger ghost" id="tpDel">${icon('trash')} Delete</button>` : ''}<span class="sp"></span><button class="btn" data-close>Cancel</button><button class="btn primary" id="tpSave">Save</button>`);
     const f = $('#tpF'), bal = () => { $('#tpBal').textContent = U.money(-R.bal([f.taxAccountId.value])); }; f.taxAccountId.onchange = bal; bal();
     $('#tpSave', m).onclick = () => { const v = readForm(f); v.amount = U.num(v.amount); if (v.amount <= 0 || !v.accountId) return toast('Enter the amount and paying account', 'err'); if (isLocked(v.date)) return toast(lockMsg(), 'err');
@@ -1797,7 +1836,7 @@ route('/projects', () => masterPage({
     { name: 'start', label: 'Start date', type: 'date' }, { name: 'end', label: 'End date', type: 'date' }, { name: 'budget', label: 'Budget / contract value', type: 'number' }, { name: 'manager', label: 'Project manager' },
     { name: 'description', label: 'Description', type: 'textarea', wide: true }],
   beforeSave: r => { if (!r.code) r.code = autoCode('projects', 'PRJ-'); },
-  cannotDelete: r => Ledger.get().lines.some(l => l.projectId === r.id) ? 'This project has transactions' : null,
+  cannotDelete: r => Ledger.all().lines.some(l => l.projectId === r.id) ? 'This project has transactions' : null,
 }));
 
 /* ---------- BOM & production ---------- */
@@ -1807,7 +1846,7 @@ route('/boms', () => {
     DB.data.boms, { rowAttr: b => `data-id="${b.id}" class="clickable"`, empty: 'No bills of materials yet.' });
     $$('#bomList tr[data-id]').forEach(tr => tr.onclick = e => { if (e.target.dataset.prod) return produce(DB.get('boms', e.target.dataset.prod)); edit(DB.get('boms', tr.dataset.id)); });
     $('#asmList').innerHTML = table([C_NO, C_DATE, { label: 'Item produced', get: d => item(DB.get('boms', d.bomId)?.itemId)?.name }, { label: 'Location', get: d => wh(d.warehouseId)?.name }, { label: 'Quantity', cls: 'num', get: d => U.qty(d.qty) }, { label: '', html: d => `<button class="btn sm danger ghost" data-del="${d.id}">Delete</button>` }],
-      DB.data.assemblies.slice().sort((a, b) => b.date.localeCompare(a.date)), { empty: 'No production recorded.' });
+      DB.data.assemblies.filter(inBranch).sort((a, b) => b.date.localeCompare(a.date)), { empty: 'No production recorded.' });
     $$('#asmList [data-del]').forEach(b => b.onclick = () => { const d = DB.get('assemblies', b.dataset.del); if (isLocked(d.date)) return toast(lockMsg(), 'err'); confirmBox('Delete this production entry?', () => { DB.remove('assemblies', d.id); render(); }); });
   };
   const edit = rec => {
@@ -1828,7 +1867,7 @@ route('/boms', () => {
     if (!isNew) $('#bDel', m).onclick = () => DB.data.assemblies.some(a => a.bomId === b.id) ? toast('This BOM has production entries', 'err') : confirmBox('Delete this BOM?', () => { DB.remove('boms', b.id); render(); });
   };
   const produce = b => {
-    const m = modal('Produce ' + (item(b.itemId)?.name || ''), `<form id="pF" class="grid2">${field({ name: 'date', label: 'Date', type: 'date', required: true }, U.today())}${field({ name: 'qty', label: 'Quantity to produce', type: 'number', required: true }, 1)}${field({ name: 'warehouseId', label: 'Location', type: 'select', options: v => whOpts(v) }, DB.data.warehouses[0]?.id)}</form>
+    const m = modal('Produce ' + (item(b.itemId)?.name || ''), `<form id="pF" class="grid2">${field({ name: 'date', label: 'Date', type: 'date', required: true }, U.today())}${field({ name: 'qty', label: 'Quantity to produce', type: 'number', required: true }, 1)}${field({ name: 'warehouseId', label: 'Location', type: 'select', options: v => whOpts(v) }, defWh())}</form>
       <div class="info">Components are issued from stock at average cost; the finished item is received at that cost plus overhead (${U.money(bomCost(b))} per unit at today's costs).</div>`,
       `<span class="sp"></span><button class="btn" data-close>Cancel</button><button class="btn primary" id="pSave">Record production</button>`);
     $('#pSave', m).onclick = () => { const v = readForm($('#pF')); v.qty = U.num(v.qty); if (v.qty <= 0) return toast('Enter a quantity', 'err'); if (isLocked(v.date)) return toast(lockMsg(), 'err');
@@ -1895,6 +1934,28 @@ route('/budget', () => {
     DB.save(); toast('Budget saved');
   };
 });
+
+/* ---------- Branches ---------- */
+const branchFig = (bid, from, to) => {
+  const ls = Ledger.all().lines.filter(l => l.branchId === bid && (!from || l.date >= from) && (!to || l.date <= to));
+  let inc = 0, exp = 0; ls.forEach(l => { const t = acc(l.accountId)?.type; if (t === 'Income') inc += l.credit - l.debit; else if (t === 'Expense') exp += l.debit - l.credit; });
+  return { inc, exp, profit: inc - exp };
+};
+route('/branches', () => masterPage({
+  key: 'branches', title: 'Branches', singular: 'Branch',
+  columns: [{ label: 'Code', get: r => r.code }, { label: 'Branch', html: r => `<b>${U.esc(r.name)}</b>${r.id === defBranch() ? ' <span class="tag">Main</span>' : ''}${r.id === curBranch() ? ' <span class="tag t2">Current</span>' : ''}` },
+    { label: 'City', get: r => r.city }, { label: 'Manager', get: r => r.manager }, { label: 'Locations', cls: 'num', get: r => DB.data.warehouses.filter(w => w.branchId === r.id).length },
+    { label: 'Income (this year)', cls: 'num', get: r => U.money(branchFig(r.id, U.fyStart(U.today(), DB.data.settings.fyStartMonth)).inc) },
+    { label: 'Profit (this year)', cls: 'num', html: r => { const p = branchFig(r.id, U.fyStart(U.today(), DB.data.settings.fyStartMonth)).profit; return `<b class="${p < 0 ? 'neg' : ''}">${U.money(p)}</b>`; } }],
+  fields: [{ name: 'code', label: 'Branch code', required: true, placeholder: 'e.g. LHR' }, { name: 'name', label: 'Branch name', required: true }, { name: 'manager', label: 'Branch manager' }, { name: 'phone', label: 'Phone' },
+    { name: 'city', label: 'City' }, { name: 'ntn', label: 'NTN / STRN (if different)' }, { name: 'address', label: 'Address (printed on this branch’s documents)', type: 'textarea', wide: true },
+    { name: 'makeWh', label: 'Create a warehouse / location for this branch', type: 'checkbox' }],
+  defaults: { makeWh: true },
+  validate: r => uniqueCode('branches', r),
+  afterSave: r => { if (r.makeWh && !DB.data.warehouses.some(w => w.branchId === r.id)) { DB.upsert('warehouses', { code: r.code + '-WH', name: r.name + ' Warehouse', branchId: r.id }); } delete r.makeWh; DB.save(); renderNav(); },
+  cannotDelete: r => DB.data.branches.length <= 1 ? 'At least one branch is required' : r.id === defBranch() ? 'The main (first) branch cannot be deleted' :
+    (DB.data.warehouses.some(w => w.branchId === r.id) || DOC_KEYS.some(k => DB.data[k].some(d => d.branchId === r.id))) ? 'This branch has locations or transactions' : null,
+}));
 
 </script>
 <script>
@@ -1972,7 +2033,7 @@ route('/dashboard', () => {
 const REPORTS = [
   ['Sales & Estimate', 'Revenue by customer, item and salesman', [['sales-by-customer', 'Sales By Customer'], ['item-sales', 'Sales By Item'], ['sales-by-salesman', 'Sales By Salesman'], ['estimate-details', 'Estimate Details'], ['sales-return-details', 'Sales Return Details'], ['sales-register', 'Invoice Details']]],
   ['Purchases', 'Purchases by supplier, item and category', [['purchase-by-vendor', 'Purchase By Vendor'], ['purchase-by-item', 'Purchase By Item'], ['purchase-by-category', 'Purchase By Category'], ['po-details', 'Purchase Order Detail'], ['pr-summary', 'Purchase Request Summary'], ['grn-summary', 'GRN Summary'], ['purchase-register', 'Bills Details'], ['purchase-return-details', 'Purchase Return Details']]],
-  ['Business Overview', 'Financial statements and cash', [['trial-balance', 'Trial Balance'], ['profit-loss', 'Profit and Loss'], ['balance-sheet', 'Balance Sheet'], ['cash-flow', 'Cash Flow'], ['daily-fund', 'Daily Fund Movement'], ['budget-actual', 'Budget vs Actual']]],
+  ['Business Overview', 'Financial statements and cash', [['trial-balance', 'Trial Balance'], ['profit-loss', 'Profit and Loss'], ['balance-sheet', 'Balance Sheet'], ['cash-flow', 'Cash Flow'], ['daily-fund', 'Daily Fund Movement'], ['budget-actual', 'Budget vs Actual'], ['branch-pl', 'Branch-wise Profit & Loss'], ['branch-summary', 'Branch Summary']]],
   ['Account Reports', 'Ledgers and summaries', [['ledger-summary', 'Ledger Summary'], ['general-ledger', 'Detailed General Ledger'], ['bank-ledger-summary', 'Bank Ledger Summary'], ['customer-ledger-summary', 'Ledger Summary (Customer)'], ['vendor-ledger-summary', 'Ledger Summary (Vendor)'], ['customer-ledger', 'Customer Statement'], ['supplier-ledger', 'Vendor Statement'], ['day-book', 'Day Book']]],
   ['Inventory Reports', 'Stock levels, valuation and movement', [['item-ledger', 'Item Ledger'], ['stock-summary', 'Inventory Valuation Summary'], ['location-stock', 'Location Wise Stock'], ['category-stock', 'Category Wise Stock'], ['stock-transit', 'Stock in Transit'], ['stock-movement', 'Stock Movement'], ['demand-summary', 'Demand Summary']]],
   ['Tax Reports', 'Sales tax and withholding', [['tax-return', 'Sales Tax Return']]],
@@ -2003,7 +2064,7 @@ function reportPage(key, title, filters, build) {
     warehouse: () => `<label class="inl">Warehouse <select name="wh">${whOpts(f.wh, 'All warehouses')}</select></label>`,
     zero: () => `<label class="inl"><input type="checkbox" name="zero" ${f.zero ? 'checked' : ''}> Show zero balances</label>`,
   };
-  page(title, `<div class="card"><div class="toolbar no-print" id="rf">${filters.map(k => ctl[k]()).join('')}</div><div id="rOut" class="rep-out"></div></div>`,
+  page(title, `<div class="card"><div class="toolbar no-print" id="rf">${filters.map(k => ctl[k]()).join('')}${DB.data.branches.length > 1 ? `<span class="pill">${curBranch() ? 'Branch: ' + U.esc(branchName(curBranch())) : 'All branches'}</span>` : ''}</div><div id="rOut" class="rep-out"></div></div>`,
     `<button class="btn" id="rCsv">${icon('dl')} Excel / CSV</button><button class="btn" id="rPrint">${icon('print')} Print</button>`, [['Reports', '#/reports']]);
   const run = () => {
     $$('#rf [name]').forEach(el => { f[el.name] = el.type === 'checkbox' ? (el.checked ? '1' : '') : el.value; });
@@ -2443,6 +2504,32 @@ route('/analytics', () => {
     <div class="card pad"><div class="card-h"><h3>Income vs expenses by month</h3><span class="legend"><i class="lg-s"></i>Income <i class="lg-p"></i>Expenses</span></div><svg viewBox="0 0 ${W} ${H}" class="chart"><line x1="0" x2="${W}" y1="${H - 20}" y2="${H - 20}" class="base"/>${bars}</svg></div>
     <div class="grid-3"><div class="card pad"><h3>Top customers</h3>${hbars(topC, 'c1')}</div><div class="card pad"><h3>Top selling items</h3>${hbars(topI, 'c2')}</div><div class="card pad"><h3>Top expenses</h3>${hbars(topE, 'c3')}</div></div>`);
 });
+
+/* ---- Branch reports (always across all branches) ---- */
+route('/reports/branch-pl', () => reportPage('branch-pl', 'Branch-wise Profit & Loss', ['from', 'to'], f => {
+  const brs = DB.data.branches, ls = Ledger.all().lines.filter(l => inP(l, f));
+  const accs = leafAccounts().filter(a => a.type === 'Income' || a.type === 'Expense');
+  const val = (a, b) => U.sum(ls.filter(l => l.accountId === a.id && l.branchId === b), l => a.type === 'Income' ? l.credit - l.debit : l.debit - l.credit);
+  const rowsFor = type => accs.filter(a => a.type === type).map(a => ({ a, v: brs.map(b => val(a, b.id)) })).filter(r => r.v.some(x => Math.abs(x) > 0.005));
+  const inc = rowsFor('Income'), exp = rowsFor('Expense');
+  const tot = rows => brs.map((_, i) => U.sum(rows, r => r.v[i]));
+  const ti = tot(inc), te = tot(exp);
+  const line = r => `<tr><td style="padding-left:28px">${U.esc(r.a.name)}</td>${r.v.map(x => `<td class="num">${U.money(x, true)}</td>`).join('')}<td class="num"><b>${U.money(U.sum(r.v))}</b></td></tr>`;
+  const totRow = (label, t, cls = 'tot') => `<tr class="${cls}"><td>${label}</td>${t.map(x => `<td class="num">${U.money(x)}</td>`).join('')}<td class="num">${U.money(U.sum(t))}</td></tr>`;
+  return `<div class="tbl-wrap"><table class="tbl stmt"><thead><tr><th>Particulars</th>${brs.map(b => `<th class="num">${U.esc(b.name)}</th>`).join('')}<th class="num">Total</th></tr></thead><tbody>
+    <tr class="grp"><td colspan="${brs.length + 2}"><b>Income</b></td></tr>${inc.map(line).join('')}${totRow('Total income', ti)}
+    <tr class="grp"><td colspan="${brs.length + 2}"><b>Expenses</b></td></tr>${exp.map(line).join('')}${totRow('Total expenses', te)}
+    ${totRow('Net profit / (loss)', ti.map((x, i) => x - te[i]), 'grand')}</tbody></table></div>`;
+}));
+route('/reports/branch-summary', () => reportPage('branch-summary', 'Branch Summary', ['asOf'], f => {
+  const K = L(), all = Ledger.all();
+  const bal = (b, ids) => { const s = new Set(ids); return U.sum(all.lines.filter(l => l.branchId === b && l.date <= f.asOf && s.has(l.accountId)), l => l.debit - l.credit); };
+  const fy = U.fyStart(f.asOf, DB.data.settings.fyStartMonth);
+  const rows = DB.data.branches.map(b => ({ b, cash: bal(b.id, cashBankAccounts().map(a => a.id)), ar: bal(b.id, [K.ar]), ap: -bal(b.id, [K.ap]),
+    stock: U.sum(all.moves.filter(m => m.branchId === b.id && m.date <= f.asOf), m => m.value), ib: -bal(b.id, [K.interBranch]), profit: branchFig(b.id, fy, f.asOf).profit }));
+  const cols = [{ label: 'Branch', html: r => `<b>${U.esc(r.b.name)}</b>` }, ...[['Cash & bank', 'cash'], ['Receivables', 'ar'], ['Payables', 'ap'], ['Stock value', 'stock'], ['Inter-branch (payable)/receivable', 'ib'], ['Profit this year', 'profit']].map(([l, k]) => Object.assign(moneyCol(l, k), { sumKey: k }))];
+  return table(cols, rows, { foot: footFor(cols, rows) }) + '<p class="muted sm pad-x">Inter-branch balances arise when stock is transferred between branches; across all branches they net to zero once goods are received.</p>';
+}));
 
 </script>
 <script>
