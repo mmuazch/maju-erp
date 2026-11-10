@@ -188,6 +188,73 @@ a.kpi.bank.sel{border-color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
 .b-expired,.b-cancelled{background:var(--red-soft);color:var(--red)}
 .b-money-in{background:#e7f6ec;color:var(--green)}.b-money-out{background:#eef2ff;color:var(--blue)}
 
+/* ---------- dropdowns / view page ---------- */
+.dd{position:relative;display:inline-block}
+.dd-menu{display:none;position:absolute;left:0;top:calc(100% + 4px);min-width:210px;background:#fff;border:1px solid var(--line);border-radius:9px;box-shadow:0 12px 30px rgba(13,27,36,.16);padding:5px;z-index:60;text-align:left}
+.dd.right .dd-menu{left:auto;right:0}
+.dd.open .dd-menu{display:block}
+.dd-menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:13.5px;color:var(--ink);white-space:nowrap}
+.dd-menu button:hover{background:var(--line2)}.dd-menu button.danger{color:var(--red)}.dd-menu button.warn{color:var(--amber)}
+.dd-menu hr{border:0;border-top:1px solid var(--line2);margin:4px 0}
+.row-dd .dd-btn{height:28px;padding:0 9px;font-weight:700}
+td.acts{white-space:nowrap}td.acts .icon-btn{vertical-align:middle;font-size:15px}
+tr.voided td{color:#9aa5b1;text-decoration:line-through}tr.voided td.acts,tr.voided td:nth-child(5){text-decoration:none}
+.b-void{background:#eceff3;color:#6b7785;text-decoration:none}
+.kpis.aging .kpi{border-left:4px solid var(--line)}.kpi.ag0{border-left-color:var(--acc)!important}.kpi.ag1{border-left-color:#d97706!important}.kpi.ag2{border-left-color:#ea580c!important}.kpi.ag3{border-left-color:var(--red)!important}
+.vhead{padding:14px 18px 0}.vh-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.vh-no{font-size:18px;font-weight:700;display:flex;gap:8px;align-items:center}
+.vh-tools{display:flex;gap:6px;flex-wrap:wrap}.vh-tools .btn{height:34px;padding:0 11px}
+.vtabs{display:flex;gap:4px;margin-top:12px;border-top:1px solid var(--line2)}
+.vtabs a{padding:10px 14px;color:var(--muted);font-weight:600;border-bottom:2px solid transparent}.vtabs a.active{color:var(--acc);border-bottom-color:var(--acc)}
+.vbody-paper{background:#e9edf1}
+.paper-wrap{padding:22px;overflow:auto}
+.paper{background:#fff;width:210mm;max-width:100%;min-height:200mm;margin:0 auto;padding:12mm;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.paper.p80w{width:80mm;min-height:0;padding:4mm}
+/* ---------- template editor ---------- */
+.tpl-wrap{display:grid;grid-template-columns:190px 340px minmax(0,1fr);gap:16px;align-items:start}
+.tpl-types{padding:6px;position:sticky;top:72px}.tpl-types a{display:block;padding:8px 10px;border-radius:7px;font-size:13.5px}.tpl-types a:hover{background:var(--line2)}.tpl-types a.active{background:var(--acc-soft);color:var(--acc);font-weight:600}
+.tpl-opts{padding:12px 14px;max-height:calc(100vh - 150px);overflow:auto;position:sticky;top:72px}
+.tpl-opts details{border-top:1px solid var(--line2);padding:8px 0}.tpl-opts summary{font-weight:650;cursor:pointer;padding:4px 0}
+.tgrp{display:flex;flex-direction:column;gap:7px;padding:8px 2px 4px}
+.tchk{display:flex;gap:8px;align-items:center;font-size:13px}.tchk input{width:auto;min-height:0}
+.tfld{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:#3c4856}.tfld input,.tfld select,.tfld textarea{font-weight:400}
+.tfld input[type=color]{height:34px;padding:2px;width:70px}
+.timg{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px;font-weight:400}.timg img{max-height:42px;max-width:150px;border:1px solid var(--line);border-radius:4px;background:#fff}.timg input{font-size:12px;border:0;padding:0;min-height:0}
+.tpl-logo{padding-bottom:10px}
+.tpl-act{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;padding-top:10px;border-top:1px solid var(--line2)}
+.tpl-prev{background:#e9edf1;border-radius:var(--r);border:1px solid var(--line)}
+.prev-bar{display:flex;gap:10px;align-items:center;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);border-radius:var(--r) var(--r) 0 0}
+/* ---------- printable documents ---------- */
+.pdoc{position:relative;color:#111;line-height:1.4}
+.pdoc .sm{font-size:.85em;color:#555}.pdoc .pre{white-space:pre-line}
+.pd-wm{position:absolute;inset:0;display:grid;place-items:center;font-size:90px;font-weight:800;color:rgba(0,0,0,.06);transform:rotate(-25deg);pointer-events:none;letter-spacing:6px}
+.p80 .pd-wm{font-size:40px}
+.pd-himg{display:block;width:100%;max-height:150px;object-fit:contain;margin-bottom:8px}
+.pd-fimg{display:block;width:100%;max-height:110px;object-fit:contain;margin-top:12px}
+.pd-head{display:flex;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:2px solid var(--pa)}
+.pd-co{display:flex;gap:12px;align-items:center}.pd-logo{max-height:70px;max-width:160px}.pd-coname{font-size:1.6em;font-weight:700;color:var(--pa)}
+.pd-titlebar{display:flex;justify-content:flex-end;align-items:baseline;gap:12px;margin:12px 0 6px;flex-direction:column;align-items:flex-end}
+.pd-title{font-size:2em;letter-spacing:1px;color:var(--pa)}.pd-no{font-weight:700}
+.pd-top{display:flex;justify-content:space-between;gap:20px;margin-bottom:12px}
+.pd-bill small{display:block;font-weight:700;font-size:1em;margin-bottom:2px}.pd-bill b{display:block}
+.pd-meta td{padding:2px 0 2px 14px;text-align:right}.pd-meta td:first-child{font-weight:700}
+.pd-items{width:100%;border-collapse:collapse;margin-top:6px}
+.pd-items th{background:var(--pa);color:#fff;padding:6px 8px;text-align:left;font-weight:600;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pd-items td{padding:6px 8px;border-bottom:1px solid #ddd;vertical-align:top}
+.pd-items .num{text-align:right;white-space:nowrap}.pd-items tfoot td{border-bottom:0;border-top:1px solid #999}
+.pd-bottom{display:flex;justify-content:space-between;gap:18px;margin-top:10px;flex-wrap:wrap}.pd-left{flex:1}
+.pd-taxsum{border-collapse:collapse;margin-top:6px;font-size:.92em}.pd-taxsum th,.pd-taxsum td{border:1px solid #ccc;padding:3px 8px}.pd-taxsum .num{text-align:right}
+.pd-totals{border-collapse:collapse;min-width:260px;margin-left:auto}.pd-totals td{padding:4px 8px;text-align:right}.pd-totals td:first-child{font-weight:600}
+.pd-totals tr.g td{border-top:2px solid var(--pa);font-weight:800;font-size:1.1em}.pd-totals tr.g2 td{background:#f1f3f5;font-weight:800;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pd-sec{margin-top:12px}.pd-bank{border:1px dashed #bbb;padding:8px;border-radius:4px}
+.pd-stamp{max-height:90px;margin:14px 0 0 auto;display:block}
+.pd-signs{display:flex;gap:30px;margin-top:60px}.pd-signs div{flex:1;border-top:1px solid #333;padding-top:5px;text-align:center;font-size:.9em}
+.pd-note{margin-top:14px;color:#555;font-size:.9em}.pd-ftext{text-align:center;margin-top:10px;font-size:.9em;color:#444}
+.p80{width:72mm;font-size:11px}.p80 .c{text-align:center}.p80 .b{font-weight:700}.p80 .big{font-size:1.25em}.p80 .ttl{margin:6px 0;letter-spacing:1px}
+.p80 .kv{display:flex;justify-content:space-between;gap:6px}.p80 .dash{border-top:1px dashed #333;margin:5px 0}.p80 .it{margin:3px 0}
+.p80 .words{font-size:.9em;margin-top:4px}.pd-logo80{display:block;max-height:50px;max-width:60mm;margin:0 auto 4px}
+#printRoot{display:none}
+
 /* ---------- modal / toast ---------- */
 .overlay{position:fixed;inset:0;background:rgba(13,27,36,.45);display:grid;place-items:center;z-index:100;padding:16px;animation:fade .12s}
 .modal{background:#fff;border-radius:12px;width:min(620px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -214,6 +281,9 @@ a.kpi.bank.sel{border-color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
 #printArea{display:none}
 
 @media print{
+  body.printing > *:not(#printRoot){display:none!important}
+  body.printing #printRoot{display:block!important}
+  body.printing #printRoot .pdoc{margin:0}
   @page{margin:14mm}
   body{background:#fff;font-size:12px}
   #sidebar,#topbar,.page-head,.no-print,#toasts,#modalRoot{display:none!important}
@@ -234,7 +304,8 @@ a.kpi.bank.sel{border-color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
   body.nav-open #sidebar{transform:none;box-shadow:0 0 40px rgba(0,0,0,.3)}
   #wrap{margin-left:0}
   #menuBtn{display:inline-grid}
-  .grid-2,.grid-3,.doc-foot{grid-template-columns:1fr}
+  .grid-2,.grid-3,.doc-foot,.tpl-wrap{grid-template-columns:1fr}
+  .tpl-types,.tpl-opts{position:static;max-height:none}
   #main{padding:16px}
   .co{display:none}
   .branch-sw select{max-width:140px}
@@ -251,7 +322,7 @@ a.kpi.bank.sel{border-color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
    Maju ERP — core: utilities, storage, ledger
    All data lives in the browser (localStorage).
    ========================================================= */
-const APP = { name: 'Maju ERP', short: 'Maju ERP', version: '2.1.0' };
+const APP = { name: 'Maju ERP', short: 'Maju ERP', version: '2.2.0' };
 const STORE_KEY = 'majuErp.data.v1';
 
 const U = {
@@ -449,6 +520,7 @@ const defBranch = () => DB.data?.branches?.[0]?.id || 'b1';
 const branchName = id => DB.data.branches.find(b => b.id === id)?.name || '';
 const whBranch = id => DB.data.warehouses.find(w => w.id === id)?.branchId || '';
 const defWh = () => (DB.data.warehouses.find(w => !curBranch() || w.branchId === curBranch()) || DB.data.warehouses[0])?.id;
+const live = arr => (arr || []).filter(d => !d.void && inBranch(d));
 const inBranch = d => !curBranch() || (d.branchId || defBranch()) === curBranch();
 const Ledger = {
   _c: null,
@@ -468,7 +540,7 @@ const Ledger = {
     const events = [];
     const DB0 = defBranch(); let curB = DB0;
     const ev = (date, order, doc, fn, br) => events.push({ date: date || OD, order, t: doc.createdAt || 0, fn: () => { curB = br || doc.branchId || DB0; fn(); } });
-    const list = k => db[k] || [];
+    const list = k => (db[k] || []).filter(d => !d.void);
 
     const post = (h, ls) => {
       ls.forEach(l => {
@@ -725,7 +797,7 @@ const R = {
   },
   // FIFO allocation of party balance to open documents
   openDocs(type, id, asOf) {
-    const docs = (type === 'C' ? DB.data.invoices.filter(d => d.customerId === id) : DB.data.bills.filter(d => d.supplierId === id))
+    const docs = (type === 'C' ? DB.data.invoices.filter(d => !d.void && d.customerId === id) : DB.data.bills.filter(d => !d.void && d.supplierId === id))
       .filter(d => !asOf || d.date <= asOf).map(d => ({ d, total: U.r2(calcDoc(d).total - (d.receivedAccountId ? U.num(d.receivedAmount) : 0) - (d.paidAccountId ? U.num(d.paidAmount) : 0)), full: calcDoc(d).total }));
     const p = party(type, id);
     if (U.num(p?.opening) > 0) docs.push({ d: { id: 'ob', no: 'Opening', date: DB.data.settings.openingDate }, total: U.num(p.opening) });
@@ -796,7 +868,7 @@ const NAV = [
   { label: 'Reports', icon: 'chart', href: '#/reports' },
   { section: 'Settings' },
   { label: 'Settings', icon: 'gear', children: [
-    ['Company Profile', '#/settings/company'], ['Branches', '#/branches'], ['Account Linking', '#/settings/links'], ['Backup & Restore', '#/settings/backup']] },
+    ['Company Profile', '#/settings/company'], ['Branches', '#/branches'], ['Document Templates', '#/templates'], ['Account Linking', '#/settings/links'], ['Backup & Restore', '#/settings/backup']] },
 ];
 
 function renderShell() {
@@ -1230,20 +1302,24 @@ route('/settings/backup', () => {
 /* ---------- generic list page ---------- */
 function docList(cfg) {
   const render = () => {
-    const f = { from: $('#dFrom').value, to: $('#dTo').value, q: $('#dQ').value.toLowerCase() };
+    const f = { from: $('#dFrom').value, to: $('#dTo').value, q: $('#dQ').value.toLowerCase(), st: $('#dSt')?.value || '' };
     let rows = DB.data[cfg.key].filter(d => inBranch(d) && (!f.from || d.date >= f.from) && (!f.to || d.date <= f.to));
     if (f.q) rows = rows.filter(d => (d.no + ' ' + (cfg.partyName ? cfg.partyName(d) : '') + ' ' + (d.memo || d.notes || d.ref || '')).toLowerCase().includes(f.q));
+    if (f.st && cfg.statusOf) rows = rows.filter(d => cfg.statusOf(d) === f.st);
     rows.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
-    $('#dList').innerHTML = table(cfg.columns, rows, { rowAttr: d => `data-href="#/${cfg.path}/${d.id}" class="clickable"`, empty: `No ${cfg.title.toLowerCase()} in this period.`,
-      foot: cfg.totalOf ? [...cfg.columns.slice(0, -2).map((c, i) => ({ v: i === 0 ? `<b>${rows.length} record(s)</b>` : '' })), { cls: 'num', v: `<b>${U.money(U.sum(rows, cfg.totalOf))}</b>` }, {}] : null });
+    const live = rows.filter(d => !d.void);
+    $('#dList').innerHTML = table(cfg.columns, rows, { rowAttr: d => `data-href="${cfg.rowHref ? cfg.rowHref(d) : `#/${cfg.path}/${d.id}`}" class="clickable ${d.void ? 'voided' : ''}"`, empty: `No ${cfg.title.toLowerCase()} in this period.`,
+      foot: cfg.totalOf ? [...cfg.columns.slice(0, -2).map((c, i) => ({ v: i === 0 ? `<b>${live.length} record(s)</b>` : '' })), { cls: 'num', v: `<b>${U.money(U.sum(live, cfg.totalOf))}</b>` }, {}] : null });
     bindRowLinks($('#dList'));
+    if (cfg.onRender) cfg.onRender($('#dList'));
   };
-  page(cfg.title, `<div class="card"><div class="toolbar">
+  page(cfg.title, `${cfg.top ? cfg.top() : ''}<div class="card"><div class="toolbar">
       <div class="search">${icon('search')}<input id="dQ" placeholder="Search number, party…"></div>
+      ${cfg.statuses ? `<label class="inl">Status <select id="dSt"><option value="">All</option>${cfg.statuses.map(x => `<option>${x}</option>`).join('')}</select></label>` : ''}
       <label class="inl">From <input type="date" id="dFrom" value="${U.fyStart(U.today(), DB.data.settings.fyStartMonth)}"></label>
-      <label class="inl">To <input type="date" id="dTo"></label></div><div id="dList"></div></div>`,
+      <label class="inl">To <input type="date" id="dTo"></label>${cfg.toolbarExtra || ''}</div><div id="dList"></div></div>`,
     `<a class="btn primary" href="#/${cfg.path}/new">${icon('plus')} New ${cfg.singular}</a>`);
-  ['dQ', 'dFrom', 'dTo'].forEach(id => $('#' + id).oninput = render);
+  ['dQ', 'dFrom', 'dTo', 'dSt'].forEach(id => { if ($('#' + id)) $('#' + id).oninput = render; });
   render();
 }
 
@@ -1251,6 +1327,7 @@ function docList(cfg) {
 function docEditor(cfg, id, qs = {}) {
   const existing = id !== 'new' ? DB.get(cfg.key, id) : null;
   if (id !== 'new' && !existing) return go('#/' + cfg.path);
+  if (existing && existing.void) { toast('This document is void. Restore it before editing.', 'err'); return go(cfg.kind && TK[cfg.kind] ? `#/v/${cfg.kind}/${id}` : '#/' + cfg.path); }
   const doc = existing ? JSON.parse(JSON.stringify(existing)) : cfg.blank(qs);
   if (!doc.lines || !doc.lines.length) doc.lines = [cfg.newLine(doc)];
 
@@ -1309,15 +1386,16 @@ function docEditor(cfg, id, qs = {}) {
     if (err) { if (!doc.lines.length) doc.lines.push(cfg.newLine(doc)); renderLines(); return toast(err, 'err'); }
     if (!doc.no) doc.no = DB.nextNo(cfg.prefix);
     if (cfg.beforeSave) cfg.beforeSave(doc);
+    doc.log = (existing?.log || []).concat({ at: new Date().toISOString(), what: existing ? 'Edited' : (doc.fromNo ? 'Created from ' + doc.fromNo : qs.dup ? 'Created as a duplicate' : 'Created') });
     DB.upsert(cfg.key, doc);
     toast(`${cfg.singular} ${doc.no} saved`);
-    go(andNew ? `#/${cfg.path}/new` : `#/${cfg.path}/${doc.id}`);
+    go(andNew ? `#/${cfg.path}/new` : cfg.kind && TK[cfg.kind] ? `#/v/${cfg.kind}/${doc.id}` : `#/${cfg.path}/${doc.id}`);
   };
   $('#dSave').onclick = () => save(false);
   $('#dSaveNew').onclick = () => save(true);
   if (existing) {
     $('#dDel').onclick = () => isLocked(existing.date) ? toast(lockMsg(), 'err') : confirmBox(`Delete ${cfg.singular.toLowerCase()} ${doc.no}? Its postings will be reversed.`, () => { DB.remove(cfg.key, doc.id); toast('Deleted'); go('#/' + cfg.path); });
-    if (cfg.print) $('#dPrint').onclick = () => { $('#printArea').innerHTML = cfg.print(existing); window.print(); };
+    if (cfg.print) $('#dPrint').onclick = () => cfg.kind && TK[cfg.kind] ? printTradeDoc(cfg.kind, existing) : doPrint(cfg.print(existing), 'A4');
     if (cfg.bindExtra) cfg.bindExtra(existing);
   }
 }
@@ -1338,15 +1416,16 @@ const TK = {
 };
 const findKindByKey = key => Object.keys(TK).find(k => TK[k].key === key);
 function convertedTo(id) {
-  for (const k in TK) { const d = DB.data[TK[k].key].find(x => x.fromId === id); if (d) return { k, d }; }
+  for (const k in TK) { const d = DB.data[TK[k].key].find(x => !x.void && x.fromId === id); if (d) return { k, d }; }
   return null;
 }
 function tradeStatus(kind, d) {
   const T = TK[kind];
+  if (d.void) return 'Void';
   if (T.posts) return R.docStatus(T.S ? 'C' : 'S', d);
   if (T.credit) return 'Posted';
-  if (kind === 'dn') return DB.data.invoices.some(x => x.dnId === d.id) ? 'Invoiced' : 'Not invoiced';
-  if (kind === 'grn') return DB.data.bills.some(x => x.grnId === d.id) ? 'Billed' : 'Not billed';
+  if (kind === 'dn') return DB.data.invoices.some(x => !x.void && x.dnId === d.id) ? 'Invoiced' : 'Not invoiced';
+  if (kind === 'grn') return DB.data.bills.some(x => !x.void && x.grnId === d.id) ? 'Billed' : 'Not billed';
   if (kind === 'dnr') return 'Posted';
   return convertedTo(d.id) ? 'Converted' : 'Open';
 }
@@ -1400,6 +1479,11 @@ function tradeCfg(kind) {
           if (qs.src === 'bill') d.billId = src.id;
         }
       }
+      if (qs.dup) {
+        const src = DB.get(T.key, qs.dup);
+        if (src) { const c = JSON.parse(JSON.stringify(src)); ['id', 'no', 'createdAt', 'log', 'void', 'fromId', 'fromNo', 'dnId', 'grnId', 'invoiceId', 'billId', 'recurringId', 'receivedAmount', 'receivedAccountId', 'paidAmount', 'paidAccountId', 'refundAmount', 'refundAccountId'].forEach(k => delete c[k]);
+          Object.assign(d, c, { date: U.today() }); if (src.dueDate) d.dueDate = U.addDays(U.today(), U.daysBetween(src.date, src.dueDate)); }
+      }
       if (qs.party) d[pk] = qs.party;
       return d;
     },
@@ -1444,7 +1528,7 @@ function tradeCfg(kind) {
     beforeSave: doc => { doc.taxRate = U.num(doc.taxRate); doc.lines.forEach(l => { l.qty = U.num(l.qty); l.rate = U.num(l.rate); l.disc = U.num(l.disc); }); },
     extraButtons: doc => T.to.map(k => `<a class="btn" href="#/${TK[k].path}/new?src=${kind}&from=${doc.id}">→ ${TK[k].singular}</a>`).join('') +
       (kind === 'invoice' ? `<a class="btn" href="#/receipts?new=${doc.customerId}">Record payment</a>` : kind === 'bill' ? `<a class="btn" href="#/payments?new=${doc.supplierId}">Record payment</a>` : ''),
-    print: doc => printTrade(kind === 'invoice' && U.num(doc.taxRate) ? 'Sales Tax Invoice' : T.singular, doc, PT, pk, T.priced),
+    print: doc => renderDocPrint(kind, doc),
   });
 }
 
@@ -1460,18 +1544,29 @@ function printTrade(title, doc, PT, pk, priced = true) {
     <div class="signs"><div>Prepared by</div><div>Approved by</div><div>Received by</div></div></div>`;
 }
 
+function agingCards(PT) {
+  const list = PT === 'C' ? DB.data.customers : DB.data.suppliers, B = [0, 0, 0, 0], today = U.today();
+  list.forEach(p => Object.values(R.openDocs(PT, p.id)).forEach(o => { if (o.open <= 0) return; const days = U.daysBetween(o.doc.dueDate || U.addDays(o.doc.date, U.num(p.terms)), today); B[days <= 0 ? 0 : days <= 30 ? 1 : days <= 60 ? 2 : 3] += o.open; }));
+  return `<div class="kpis aging">${[['Current', 'ag0'], ['1–30 days overdue', 'ag1'], ['31–60 days overdue', 'ag2'], ['Over 60 days', 'ag3']].map(([l, c], i) => `<a class="kpi ${c}" href="#/reports/${PT === 'C' ? 'receivables' : 'payables'}-aging"><span>${l}</span><b>${DB.data.settings.currency} ${U.money(B[i])}</b></a>`).join('')}</div>`;
+}
 function tradeList(kind) {
   const c = tradeCfg(kind);
   const cols = [
-    { label: 'Number', html: d => `<b>${U.esc(d.no)}</b>` },
     { label: 'Date', get: d => U.fdate(d.date) },
+    { label: c.singular + ' #', html: d => `<a class="lnk" href="#/v/${kind}/${d.id}">${U.esc(d.no)}</a>` },
     { label: c.S ? 'Customer' : 'Supplier', get: d => d[c.pk] ? partyName(c.PT, d[c.pk]) : '—' },
     { label: 'Reference', get: d => d.ref },
     { label: 'Status', html: d => badge(tradeStatus(kind, d)) },
   ];
+  if (c.posts) cols.push({ label: 'Due date', get: d => U.fdate(d.dueDate) }, { label: c.S ? 'Received' : 'Paid', cls: 'num', get: d => { if (d.void) return ''; const o = R.openDocs(c.PT, d[c.pk])[d.id]; return U.money(o ? o.total - o.open : 0); } });
+  if (kind === 'invoice' || kind === 'estimate' || kind === 'so') cols.push({ label: 'Salesman', get: d => DB.data.salesmen.find(s => s.id === d.salesmanId)?.name || '' });
   cols.push(c.priced ? { label: 'Amount', cls: 'num', get: d => U.money(calcDoc(d).total) } : { label: 'Quantity', cls: 'num', get: d => U.qty(U.sum(d.lines, l => U.num(l.qty))) });
-  cols.push({ label: '', cls: 'num', html: () => '›' });
-  docList({ key: c.key, path: c.path, title: c.title, singular: c.singular, partyName: d => partyName(c.PT, d[c.pk]), totalOf: c.priced ? d => calcDoc(d).total : null, columns: cols });
+  cols.push({ label: 'Actions', cls: 'num acts', html: d => `<a class="icon-btn" title="Edit" href="#/${c.path}/${d.id}">✎</a>${ddMenu('⋯', docActions(kind, d), 'right row-dd')}` });
+  const statuses = c.posts ? ['Unpaid', 'Partial', 'Paid', 'Overdue', 'Void'] : kind === 'dn' ? ['Not invoiced', 'Invoiced', 'Void'] : kind === 'grn' ? ['Not billed', 'Billed', 'Void'] : c.credit || kind === 'dnr' ? ['Posted', 'Void'] : ['Open', 'Converted', 'Void'];
+  docList({ key: c.key, path: c.path, title: c.title, singular: c.singular, partyName: d => partyName(c.PT, d[c.pk]), totalOf: c.priced ? d => calcDoc(d).total : null, columns: cols,
+    statusOf: d => tradeStatus(kind, d), statuses, rowHref: d => `#/v/${kind}/${d.id}`,
+    top: (kind === 'invoice' || kind === 'bill') ? () => agingCards(c.PT) : null,
+    onRender: root => $$('[data-act]', root).forEach(b => b.onclick = e => { e.stopPropagation(); const id = b.closest('tr').dataset.href.split('/').pop(); b.closest('.dd').classList.remove('open'); runDocAction(kind, DB.get(c.key, id), b.dataset.act, b.dataset.arg, () => go(location.hash)); }) });
 }
 Object.keys(TK).forEach(k => {
   const p = TK[k].path;
@@ -1520,7 +1615,7 @@ function moneyDocs(S) {
     };
     if (!isNew) {
       $('#rDel', m).onclick = () => isLocked(rec.date) ? toast(lockMsg(), 'err') : confirmBox(`Delete ${singular.toLowerCase()} ${rec.no}?`, () => { DB.remove(key, rec.id); render(); });
-      $('#rPrint', m).onclick = () => { $('#printArea').innerHTML = printMoney(rec); closeModal(); window.print(); };
+      $('#rPrint', m).onclick = () => { closeModal(); doPrint(printMoney(rec), 'A4'); };
     }
   };
   const printMoney = d => `<div class="print-doc">${printHeader(S ? 'Payment Receipt' : 'Payment Voucher', `<b>${U.esc(d.no)}</b><br>Date: ${U.fdate(d.date)}`)}
@@ -1977,7 +2072,7 @@ route('/dashboard', () => {
   const months = [];
   for (let i = 5; i >= 0; i--) { const d = new Date(today + 'T00:00:00Z'); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() - i); months.push(d.toISOString().slice(0, 7)); }
   const inMonth = (arr, m) => U.sum(arr.filter(d => d.date.startsWith(m)), d => calcDoc(d).net);
-  const series = months.map(m => ({ m, s: inMonth(DB.data.invoices, m), p: inMonth(DB.data.bills, m) }));
+  const series = months.map(m => ({ m, s: inMonth(live(DB.data.invoices), m), p: inMonth(live(DB.data.bills), m) }));
   const max = Math.max(1, ...series.map(x => Math.max(x.s, x.p)));
   const mLabel = m => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m.slice(5) - 1];
   const W = 560, H = 200, bw = 26, gap = W / 6;
@@ -2001,7 +2096,7 @@ route('/dashboard', () => {
   const st = R.stock();
   const low = DB.data.items.filter(i => i.type !== 'Service' && U.num(i.reorder) && (st[i.id]?.qty || 0) <= U.num(i.reorder));
   const kpi = (label, v, href, cls = '') => `<a class="kpi ${cls}" href="${href}"><span>${label}</span><b>${U.money(v)}</b></a>`;
-  const empty = !DB.data.customers.length && !DB.data.items.length && !DB.data.invoices.length;
+  const empty = !DB.data.customers.length && !DB.data.items.length && !live(DB.data.invoices).length;
   page('Dashboard', `
     ${empty ? `<div class="card pad welcome"><h3>Welcome to ${U.esc(APP.name)}</h3><p>Your ERP is empty and ready. A good order to set up:</p>
       <ol><li><a href="#/settings/company">Company profile</a> — name, NTN, opening date</li><li><a href="#/accounts">Chart of accounts</a> — review accounts and enter opening balances</li><li><a href="#/items">Items</a>, <a href="#/customers">customers</a> and <a href="#/suppliers">suppliers</a></li><li>Start recording <a href="#/bills/new">purchase bills</a> and <a href="#/invoices/new">sales invoices</a></li></ol></div>` : ''}
@@ -2161,11 +2256,11 @@ route('/reports/day-book', () => reportPage('day-book', 'Day Book', ['from', 'to
 /* ---- Sales tax ---- */
 route('/reports/tax-return', () => reportPage('tax-return', 'Sales Tax Return', ['from', 'to'], f => {
   const pick = arr => arr.filter(d => d.date >= f.from && d.date <= f.to).map(d => ({ d, t: calcDoc(d) }));
-  const inv = pick(DB.data.invoices), bills = pick(DB.data.bills);
+  const inv = pick(live(DB.data.invoices)), bills = pick(live(DB.data.bills));
   const out = U.sum(inv, x => x.t.tax), inp = U.sum(bills, x => x.t.tax);
-  const sr = pick(DB.data.salesReturns || []), pr = pick(DB.data.purchaseReturns || []), ex = (DB.data.expenses || []).filter(d => d.date >= f.from && d.date <= f.to);
+  const sr = pick(live(DB.data.salesReturns)), pr = pick(live(DB.data.purchaseReturns)), ex = live(DB.data.expenses).filter(d => d.date >= f.from && d.date <= f.to);
   const out2 = out - U.sum(sr, x => x.t.tax), inp2 = inp - U.sum(pr, x => x.t.tax) + U.sum(ex, d => U.r2(U.sum(d.lines, l => U.num(l.amount)) * U.num(d.taxRate) / 100));
-  const paid = U.sum((DB.data.taxPayments || []).filter(d => d.date >= f.from && d.date <= f.to && d.taxAccountId === L().outputTax), d => U.num(d.amount));
+  const paid = U.sum(live(DB.data.taxPayments).filter(d => d.date >= f.from && d.date <= f.to && d.taxAccountId === L().outputTax), d => U.num(d.amount));
   return `<div class="kpis sm"><div class="kpi"><span>Output tax (sales − returns)</span><b>${U.money(out2)}</b></div><div class="kpi"><span>Input tax (purchases, expenses − returns)</span><b>${U.money(inp2)}</b></div><div class="kpi"><span>Tax paid in period</span><b>${U.money(paid)}</b></div><div class="kpi ${out2 - inp2 < 0 ? 'pos' : 'neg'}"><span>${out2 - inp2 >= 0 ? 'Net payable for period' : 'Excess input (carry forward)'}</span><b>${U.money(Math.abs(out2 - inp2))}</b></div></div>` +
     table([{ label: 'Type', get: x => x.k }, { label: 'Number', html: x => `<b>${U.esc(x.d.no)}</b>` }, { label: 'Date', get: x => U.fdate(x.d.date) }, { label: 'Party', get: x => x.p }, { label: 'NTN', get: x => x.n }, { label: 'Value excl. tax', cls: 'num', get: x => U.money(x.t.net) }, { label: 'Rate %', cls: 'num', get: x => U.num(x.d.taxRate) }, { label: 'Sales tax', cls: 'num', get: x => U.money(x.t.tax) }],
       inv.map(x => Object.assign({ k: 'Sale', p: partyName('C', x.d.customerId), n: party('C', x.d.customerId)?.ntn || '', r: '#/invoices/' + x.d.id }, x)).concat(bills.map(x => Object.assign({ k: 'Purchase', p: partyName('S', x.d.supplierId), n: party('S', x.d.supplierId)?.ntn || '', r: '#/bills/' + x.d.id }, x)))
@@ -2177,7 +2272,7 @@ route('/reports/tax-return', () => reportPage('tax-return', 'Sales Tax Return', 
 /* ---- Registers ---- */
 function register(key, PT, pk, title, path) {
   return f => {
-    const rows = DB.data[key].filter(d => d.date >= f.from && d.date <= f.to).sort((a, b) => a.date.localeCompare(b.date)).map(d => ({ d, t: calcDoc(d) }));
+    const rows = live(DB.data[key]).filter(d => d.date >= f.from && d.date <= f.to).sort((a, b) => a.date.localeCompare(b.date)).map(d => ({ d, t: calcDoc(d) }));
     return table([{ label: 'Date', get: x => U.fdate(x.d.date) }, { label: 'Number', html: x => `<b>${U.esc(x.d.no)}</b>` }, { label: PT === 'C' ? 'Customer' : 'Supplier', get: x => partyName(PT, x.d[pk]) },
       { label: 'Gross', cls: 'num', get: x => U.money(x.t.gross) }, { label: 'Discount', cls: 'num', get: x => U.money(x.t.discount, true) }, { label: 'Sales tax', cls: 'num', get: x => U.money(x.t.tax, true) }, { label: 'Other', cls: 'num', get: x => U.money(x.t.other, true) }, { label: 'Total', cls: 'num', get: x => U.money(x.t.total) }, { label: 'Status', html: x => badge(R.docStatus(PT, x.d)) }],
       rows, { rowAttr: x => `data-href="#/${path}/${x.d.id}" class="clickable"`, empty: 'No documents in this period.',
@@ -2258,7 +2353,7 @@ route('/reports/item-ledger', () => reportPage('item-ledger', 'Item Ledger (Stoc
 route('/reports/item-sales', () => reportPage('item-sales', 'Item-wise Sales & Profit', ['from', 'to'], f => {
   const res = {};
   const moves = Ledger.get().moves.filter(m => m.type === 'Sales Invoice' && m.date >= f.from && m.date <= f.to);
-  DB.data.invoices.filter(d => d.date >= f.from && d.date <= f.to).forEach(d => { calcDoc(d); d.lines.forEach(l => { const r = res[l.itemId] || (res[l.itemId] = { qty: 0, rev: 0, cost: 0 }); r.qty += U.num(l.qty); r.rev += U.num(l.amount); }); });
+  live(DB.data.invoices).filter(d => d.date >= f.from && d.date <= f.to).forEach(d => { calcDoc(d); d.lines.forEach(l => { const r = res[l.itemId] || (res[l.itemId] = { qty: 0, rev: 0, cost: 0 }); r.qty += U.num(l.qty); r.rev += U.num(l.amount); }); });
   moves.forEach(m => { const r = res[m.itemId]; if (r) r.cost += -m.value; });
   const rows = Object.entries(res).map(([id, r]) => Object.assign({ i: item(id) || { name: '?' } }, r)).sort((a, b) => b.rev - a.rev);
   return table([{ label: 'Item', get: r => r.i.name }, { label: 'Qty sold', cls: 'num', get: r => U.qty(r.qty) }, { label: 'Revenue', cls: 'num', get: r => U.money(r.rev) }, { label: 'Cost', cls: 'num', get: r => U.money(r.cost) }, { label: 'Gross profit', cls: 'num', get: r => U.money(r.rev - r.cost) }, { label: 'Margin %', cls: 'num', get: r => r.rev ? ((r.rev - r.cost) / r.rev * 100).toFixed(1) : '' }],
@@ -2281,15 +2376,15 @@ function grouped(items, keyFn) { const m = new Map(); items.forEach(x => { const
 function saleLines(f) {
   const out = [];
   const add = (d, sign, kind) => { const t = calcDoc(d); const ratio = t.net ? (t.net + t.other) / t.net : 1; d.lines.forEach(l => out.push({ d, kind, cust: d.customerId, sm: d.salesmanId, itemId: l.itemId, qty: sign * U.num(l.qty), amount: sign * U.num(l.amount) * ratio, tax: sign * U.num(l.amount) * U.num(d.taxRate) / 100 })); };
-  DB.data.invoices.filter(d => inP(d, f)).forEach(d => add(d, 1, 'Invoice'));
-  DB.data.salesReturns.filter(d => inP(d, f)).forEach(d => add(d, -1, 'Return'));
+  live(DB.data.invoices).filter(d => inP(d, f)).forEach(d => add(d, 1, 'Invoice'));
+  live(DB.data.salesReturns).filter(d => inP(d, f)).forEach(d => add(d, -1, 'Return'));
   return out;
 }
 function purchaseLines(f) {
   const out = [];
   const add = (d, sign) => { const t = calcDoc(d); const ratio = t.net ? (t.net + t.other) / t.net : 1; d.lines.forEach(l => out.push({ d, sup: d.supplierId, itemId: l.itemId, qty: sign * U.num(l.qty), amount: sign * U.num(l.amount) * ratio, tax: sign * U.num(l.amount) * U.num(d.taxRate) / 100 })); };
-  DB.data.bills.filter(d => inP(d, f)).forEach(d => add(d, 1));
-  DB.data.purchaseReturns.filter(d => inP(d, f)).forEach(d => add(d, -1));
+  live(DB.data.bills).filter(d => inP(d, f)).forEach(d => add(d, 1));
+  live(DB.data.purchaseReturns).filter(d => inP(d, f)).forEach(d => add(d, -1));
   return out;
 }
 function groupTable(lines, keyFn, labelCol, extra = []) {
@@ -2307,7 +2402,7 @@ route('/reports/sales-by-salesman', () => reportPage('sales-by-salesman', 'Sales
   return groupTable(saleLines(f), l => l.sm || '', { label: 'Salesman', get: r => smName(r.k) }, [{ label: 'Commission', cls: 'num', html: r => U.money(r.ls.reduce((s, l) => s + l.amount, 0) * comm(r.k) / 100, true) }]);
 }));
 function docDetails(key, kind, PT, pk, path, f, statusFn) {
-  const rows = DB.data[key].filter(d => inP(d, f)).sort((a, b) => a.date.localeCompare(b.date)).map(d => ({ d, t: calcDoc(d) }));
+  const rows = live(DB.data[key]).filter(d => inP(d, f)).sort((a, b) => a.date.localeCompare(b.date)).map(d => ({ d, t: calcDoc(d) }));
   return table([{ label: 'Date', get: x => U.fdate(x.d.date) }, { label: 'Number', html: x => `<b>${U.esc(x.d.no)}</b>` }, { label: PT === 'C' ? 'Customer' : 'Supplier', get: x => x.d[pk] ? partyName(PT, x.d[pk]) : '—' }, { label: 'Items', get: x => x.d.lines.map(l => `${item(l.itemId)?.name} × ${U.qty(l.qty)}`).join(', ') },
     { label: 'Status', html: x => badge(statusFn(x.d)) }, { label: 'Amount', cls: 'num', get: x => U.money(x.t.total) }], rows,
     { rowAttr: x => `data-href="#/${path}/${x.d.id}" class="clickable"`, empty: 'Nothing in this period.', foot: [{}, { v: `<b>${rows.length}</b>` }, { v: '<b>Total</b>' }, {}, {}, { cls: 'num', v: `<b>${U.money(U.sum(rows, x => x.t.total))}</b>` }] });
@@ -2325,7 +2420,7 @@ route('/reports/purchase-by-item', () => reportPage('purchase-by-item', 'Purchas
 route('/reports/purchase-by-category', () => reportPage('purchase-by-category', 'Purchase By Category', ['from', 'to'], f =>
   groupTable(purchaseLines(f), l => item(l.itemId)?.category || '(Uncategorised)', { label: 'Category', get: r => r.k })));
 route('/reports/pr-summary', () => reportPage('pr-summary', 'Purchase Request Summary', ['from', 'to'], f => {
-  const rows = DB.data.purchaseRequests.filter(d => inP(d, f));
+  const rows = live(DB.data.purchaseRequests).filter(d => inP(d, f));
   return table([{ label: 'Date', get: d => U.fdate(d.date) }, { label: 'Number', html: d => `<b>${U.esc(d.no)}</b>` }, { label: 'Requested by', get: d => d.requestedBy }, { label: 'Required by', get: d => U.fdate(d.requiredBy) }, { label: 'Items', get: d => d.lines.map(l => `${item(l.itemId)?.name} × ${U.qty(l.qty)}`).join(', ') }, { label: 'Status', html: d => badge(tradeStatus('pr', d)) }],
     rows, { rowAttr: d => `data-href="#/purchase-requests/${d.id}" class="clickable"`, empty: 'No purchase requests in this period.' });
 }));
@@ -2410,7 +2505,7 @@ function partySummary(PT, f) {
   }));
   const key = PT === 'C' ? 'receipts' : 'payments';
   route(`/reports/${PT === 'C' ? 'payments-received' : 'payments-made'}`, () => reportPage(PT === 'C' ? 'payments-received' : 'payments-made', PT === 'C' ? 'Payment Received' : 'Payments Made', ['from', 'to'], f => {
-    const rows = DB.data[key].filter(d => inP(d, f)).sort((a, b) => a.date.localeCompare(b.date));
+    const rows = live(DB.data[key]).filter(d => inP(d, f)).sort((a, b) => a.date.localeCompare(b.date));
     const pk = PT === 'C' ? 'customerId' : 'supplierId';
     return table([{ label: 'Date', get: d => U.fdate(d.date) }, { label: 'Number', html: d => `<b>${U.esc(d.no)}</b>` }, { label: PT === 'C' ? 'Customer' : 'Vendor', get: d => partyName(PT, d[pk]) }, { label: 'Account', get: d => acc(d.accountId)?.name }, { label: 'Reference', get: d => d.ref }, { label: 'Tax withheld', cls: 'num', get: d => U.money(d.wht, true) }, { label: 'Amount', cls: 'num', get: d => U.money(d.amount) }],
       rows, { empty: 'Nothing in this period.', foot: [{ v: '<b>Total</b>' }, {}, {}, {}, {}, { cls: 'num', v: `<b>${U.money(U.sum(rows, d => U.num(d.wht)))}</b>` }, { cls: 'num', v: `<b>${U.money(U.sum(rows, d => U.num(d.amount)))}</b>` }] });
@@ -2431,7 +2526,7 @@ route('/reports/category-stock', () => reportPage('category-stock', 'Category Wi
 }));
 route('/reports/stock-transit', () => reportPage('stock-transit', 'Stock in Transit', ['asOf'], f => {
   const rows = [];
-  DB.data.issues.filter(d => d.date <= f.asOf).forEach(iss => pendingOfIssue(iss).forEach(p => { if (p.pending > 1e-9) rows.push({ iss, p }); }));
+  live(DB.data.issues).filter(d => d.date <= f.asOf).forEach(iss => pendingOfIssue(iss).forEach(p => { if (p.pending > 1e-9) rows.push({ iss, p }); }));
   return table([{ label: 'Issue', html: r => `<b>${U.esc(r.iss.no)}</b>` }, { label: 'Date', get: r => U.fdate(r.iss.date) }, { label: 'From', get: r => wh(r.iss.fromWarehouseId)?.name }, { label: 'To', get: r => wh(r.iss.toWarehouseId)?.name }, { label: 'Item', get: r => item(r.p.itemId)?.name }, { label: 'Issued', cls: 'num', get: r => U.qty(r.p.issued) }, { label: 'Pending', cls: 'num', html: r => `<b>${U.qty(r.p.pending)}</b>` }],
     rows, { rowAttr: r => `data-href="#/issues/${r.iss.id}" class="clickable"`, empty: 'Nothing is in transit.' });
 }));
@@ -2442,7 +2537,7 @@ route('/reports/stock-movement', () => reportPage('stock-movement', 'Stock Movem
   return table([{ label: 'Item', html: r => `<a class="lnk" href="#/reports/item-ledger?item=${r.i.id}&from=${f.from}&to=${f.to}">${U.esc(r.i.name)}</a>` }, { label: 'Unit', get: r => r.i.unit }, { label: 'Opening', cls: 'num', get: r => U.qty(r.open) }, { label: 'In', cls: 'num', get: r => U.qty(r.inq) }, { label: 'Out', cls: 'num', get: r => U.qty(r.outq) }, { label: 'Closing', cls: 'num', html: r => `<b>${U.qty(r.close)}</b>` }], rows, { empty: 'No movement.' });
 }));
 route('/reports/demand-summary', () => reportPage('demand-summary', 'Demand Summary', ['from', 'to'], f => {
-  const rows = DB.data.demands.filter(d => inP(d, f));
+  const rows = live(DB.data.demands).filter(d => inP(d, f));
   return table([{ label: 'Date', get: d => U.fdate(d.date) }, { label: 'Number', html: d => `<b>${U.esc(d.no)}</b>` }, { label: 'Demanding location', get: d => wh(d.toWarehouseId)?.name }, { label: 'Items', get: d => d.lines.map(l => `${item(l.itemId)?.name} × ${U.qty(l.qty)}`).join(', ') }, { label: 'Status', html: d => badge(issuedFor(d.id).length ? 'Issued' : 'Open') }],
     rows, { rowAttr: d => `data-href="#/demands/${d.id}" class="clickable"`, empty: 'No demands in this period.' });
 }));
@@ -2500,7 +2595,7 @@ route('/analytics', () => {
   page('Analytics', `<div class="kpis">
       <div class="kpi"><span>Income this year</span><b>${U.money(ti)}</b></div><div class="kpi"><span>Expenses this year</span><b>${U.money(te)}</b></div>
       <div class="kpi ${ti - te < 0 ? 'neg' : 'pos'}"><span>Net profit</span><b>${U.money(ti - te)}</b></div><div class="kpi"><span>Gross margin</span><b>${ti ? (gp / ti * 100).toFixed(1) + '%' : '—'}</b></div>
-      <div class="kpi"><span>Invoices this year</span><b>${DB.data.invoices.filter(d => d.date >= fy).length}</b></div></div>
+      <div class="kpi"><span>Invoices this year</span><b>${live(DB.data.invoices).filter(d => d.date >= fy).length}</b></div></div>
     <div class="card pad"><div class="card-h"><h3>Income vs expenses by month</h3><span class="legend"><i class="lg-s"></i>Income <i class="lg-p"></i>Expenses</span></div><svg viewBox="0 0 ${W} ${H}" class="chart"><line x1="0" x2="${W}" y1="${H - 20}" y2="${H - 20}" class="base"/>${bars}</svg></div>
     <div class="grid-3"><div class="card pad"><h3>Top customers</h3>${hbars(topC, 'c1')}</div><div class="card pad"><h3>Top selling items</h3>${hbars(topI, 'c2')}</div><div class="card pad"><h3>Top expenses</h3>${hbars(topE, 'c3')}</div></div>`);
 });
@@ -2530,6 +2625,358 @@ route('/reports/branch-summary', () => reportPage('branch-summary', 'Branch Summ
   const cols = [{ label: 'Branch', html: r => `<b>${U.esc(r.b.name)}</b>` }, ...[['Cash & bank', 'cash'], ['Receivables', 'ar'], ['Payables', 'ap'], ['Stock value', 'stock'], ['Inter-branch (payable)/receivable', 'ib'], ['Profit this year', 'profit']].map(([l, k]) => Object.assign(moneyCol(l, k), { sumKey: k }))];
   return table(cols, rows, { foot: footFor(cols, rows) }) + '<p class="muted sm pad-x">Inter-branch balances arise when stock is transferred between branches; across all branches they net to zero once goods are received.</p>';
 }));
+
+</script>
+<script>
+'use strict';
+/* =========================================================
+   Print templates: A4 & 80mm thermal, per document type,
+   amount in words, logo / letterhead / footer / stamp images
+   ========================================================= */
+
+/* ---------- amount in words ---------- */
+function numberToWords(n, system) {
+  n = Math.floor(Math.abs(+n || 0));
+  if (!n) return 'Zero';
+  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  const two = x => x < 20 ? ones[x] : tens[Math.floor(x / 10)] + (x % 10 ? ' ' + ones[x % 10] : '');
+  const three = x => (x >= 100 ? ones[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' : '') : '') + (x % 100 ? two(x % 100) : '');
+  const parts = [];
+  if (system === 'pk') {
+    const units = [[1e7, 'Crore'], [1e5, 'Lakh'], [1e3, 'Thousand']];
+    for (const [v, w] of units) { if (n >= v) { const q = Math.floor(n / v); parts.push((q >= 100 ? numberToWords(q, 'pk') : two(q)) + ' ' + w); n %= v; } }
+    if (n) parts.push(three(n));
+  } else {
+    const units = [[1e12, 'Trillion'], [1e9, 'Billion'], [1e6, 'Million'], [1e3, 'Thousand']];
+    for (const [v, w] of units) { if (n >= v) { parts.push(three(Math.floor(n / v)) + ' ' + w); n %= v; } }
+    if (n) parts.push(three(n));
+  }
+  return parts.join(' ');
+}
+function amountInWords(amt, system) {
+  const r = Math.round(Math.abs(amt) * 100), rs = Math.floor(r / 100), ps = r % 100;
+  return `${numberToWords(rs, system)} Rupees${ps ? ' and ' + numberToWords(ps, system) + ' Paisa' : ''} Only`;
+}
+
+/* ---------- template options ---------- */
+const TPL_GROUPS = [
+  ['Layout & fonts', [['layout', 'Paper / layout', 'select', [['A4', 'A4 (full page)'], ['80mm', '80mm thermal receipt']]], ['title', 'Document title (blank = default)', 'text'], ['font', 'Font', 'select', [['Segoe UI, Arial, sans-serif', 'Sans (Segoe / Arial)'], ['Georgia, "Times New Roman", serif', 'Serif (Georgia / Times)'], ['"Courier New", monospace', 'Monospace']]], ['fontSize', 'Base font size (px)', 'number'], ['accent', 'Accent colour', 'color']]],
+  ['Header', [['showLogo', 'Show logo', 'check'], ['headerImage', 'Letterhead image (replaces logo & company block)', 'image'], ['showCompanyName', 'Show company name', 'check'], ['showCompanyAddress', 'Show company address & contact', 'check'], ['showNtn', 'Show company NTN / STRN', 'check'], ['showDate', 'Show date', 'check'], ['showDueDate', 'Show due date', 'check'], ['showTerms', 'Show payment terms', 'check'], ['showRef', 'Show reference / PO no.', 'check'], ['showSalesman', 'Show salesman', 'check'], ['showBalanceTop', 'Show balance due in header', 'check']]],
+  ['Customer / supplier', [['showBillTo', 'Show bill to', 'check'], ['showPartyAddress', 'Show address', 'check'], ['showPartyNtn', 'Show NTN / STRN', 'check'], ['showPartyPhone', 'Show phone', 'check']]],
+  ['Item table columns', [['colNum', '# (serial no.)', 'check'], ['colSku', 'SKU / item code', 'check'], ['colDesc', 'Item description', 'check'], ['colQty', 'Quantity', 'check'], ['colUnit', 'Show unit with quantity', 'check'], ['colRate', 'Rate', 'check'], ['colDisc', 'Discount %', 'check'], ['colExcl', 'Amount excl. tax', 'check'], ['colTax', 'Tax amount', 'check'], ['colIncl', 'Amount incl. tax', 'check'], ['showQtyTotal', 'Show total quantity', 'check']]],
+  ['Totals', [['showDiscount', 'Show discount', 'check'], ['showTaxSummary', 'Show tax summary', 'check'], ['showFreight', 'Show other charges / freight', 'check'], ['freightLabel', 'Other charges label', 'text'], ['totalLabel', 'Total label', 'text'], ['showReceived', 'Show received / paid amount', 'check'], ['showBalance', 'Show balance due', 'check'], ['showWords', 'Show amount in words', 'check'], ['wordsSystem', 'Words style', 'select', [['intl', 'Million / Billion'], ['pk', 'Lakh / Crore']]]]],
+  ['Bank details', [['showBank', 'Show bank details', 'check'], ['bankText', 'Bank details text', 'textarea']]],
+  ['Footer', [['showNotes', 'Show notes', 'check'], ['showTermsText', 'Show terms & conditions', 'check'], ['termsText', 'Terms & conditions text', 'textarea'], ['showSignatures', 'Show signature lines', 'check'], ['sigLabels', 'Signature labels (comma separated)', 'text'], ['stampImage', 'Stamp / signature image', 'image'], ['watermark', 'Watermark text (e.g. PAID, COPY)', 'text'], ['footerText', 'Footer text', 'text'], ['footerImage', 'Footer image', 'image']]],
+];
+const TPL_DEFAULT = {
+  layout: 'A4', title: '', font: 'Segoe UI, Arial, sans-serif', fontSize: 12, accent: '#1f2937',
+  showLogo: true, headerImage: '', showCompanyName: true, showCompanyAddress: true, showNtn: true, showDate: true, showDueDate: true, showTerms: true, showRef: true, showSalesman: false, showBalanceTop: false,
+  showBillTo: true, showPartyAddress: true, showPartyNtn: true, showPartyPhone: true,
+  colNum: true, colSku: true, colDesc: true, colQty: true, colUnit: true, colRate: true, colDisc: false, colExcl: false, colTax: false, colIncl: false, showQtyTotal: true,
+  showDiscount: true, showTaxSummary: true, showFreight: true, freightLabel: 'Freight / other charges', totalLabel: 'Total Amount', showReceived: true, showBalance: true, showWords: true, wordsSystem: 'intl',
+  showBank: false, bankText: '', showNotes: true, showTermsText: false, termsText: '', showSignatures: true, sigLabels: 'Prepared by, Approved by, Received by', stampImage: '', watermark: '', footerText: '', footerImage: '',
+};
+const TPL_TYPES = [
+  ['estimate', 'Estimates'], ['so', 'Sales Orders'], ['dn', 'Delivery Notes'], ['packing', 'Packing Slips'], ['dnr', 'Delivery Note Returns'], ['invoice', 'Invoices'], ['sret', 'Sales Returns'],
+  ['pr', 'Purchase Requests'], ['po', 'Purchase Orders'], ['grn', 'GRN'], ['bill', 'Bills'], ['pret', 'Purchase Returns'],
+];
+function getTpl(kind) {
+  const s = DB.data.settings; s.tpl = s.tpl || {};
+  const base = Object.assign({}, TPL_DEFAULT);
+  if (kind === 'packing' || kind === 'dn' || kind === 'dnr' || kind === 'pr') Object.assign(base, { colRate: false, colDisc: false, showDiscount: false, showTaxSummary: false, showFreight: false, showReceived: false, showBalance: false, showWords: false, showDueDate: false });
+  if (kind === 'grn') Object.assign(base, { showReceived: false, showBalance: false, showDueDate: false });
+  return Object.assign(base, s.tpl[kind] || {});
+}
+const docTitle = (kind, doc, t) => t.title || (kind === 'packing' ? 'PACKING SLIP' : kind === 'invoice' && U.num(doc.taxRate) ? 'SALES TAX INVOICE' : (TK[kind]?.singular || 'Document').toUpperCase());
+
+/* ---------- renderer ---------- */
+function renderDocPrint(kind, doc, variant) {
+  const pkind = variant || kind;
+  const T = TK[kind] || TK.invoice, t = getTpl(pkind), s = DB.data.settings;
+  const PT = T.S ? 'C' : 'S', pk = T.S ? 'customerId' : 'supplierId';
+  const p = party(PT, doc[pk]) || doc._party || {};
+  const br = DB.data.branches.find(b => b.id === doc.branchId);
+  const tot = calcDoc(doc), rate = U.num(doc.taxRate);
+  const priced = T.priced && pkind !== 'packing' && t.colRate !== false;
+  const received = U.num(doc.receivedAmount || doc.paidAmount || doc.refundAmount);
+  const open = T.posts && doc.id && !doc._sample ? (R.openDocs(PT, doc[pk])[doc.id]?.open ?? tot.total) : tot.total - received;
+  const terms = U.num(p.terms) ? `${p.terms} days` : 'Due on receipt';
+  const nm = l => item(l.itemId)?.name || l._name || '';
+  const sku = l => item(l.itemId)?.code || l._sku || '';
+  const unit = l => item(l.itemId)?.unit || l._unit || '';
+  const title = docTitle(pkind, doc, t);
+  const coAddr = U.esc(br?.address || s.address || ''), coNtn = [br?.ntn || s.ntn ? 'NTN: ' + U.esc(br?.ntn || s.ntn) : '', s.strn ? 'STRN: ' + U.esc(s.strn) : ''].filter(Boolean).join(' · ');
+  const style = `font-family:${t.font};font-size:${U.num(t.fontSize) || 12}px;--pa:${t.accent || '#1f2937'}`;
+  const wm = t.watermark ? `<div class="pd-wm">${U.esc(t.watermark)}</div>` : (doc.void ? '<div class="pd-wm">VOID</div>' : '');
+
+  if (t.layout === '80mm') {
+    return `<div class="pdoc p80" style="${style}">${wm}
+      ${t.headerImage ? `<img class="pd-himg" src="${t.headerImage}">` : `${t.showLogo && s.logo ? `<img class="pd-logo80" src="${s.logo}">` : ''}${t.showCompanyName ? `<div class="c b big">${U.esc(s.company)}</div>` : ''}${br && DB.data.branches.length > 1 ? `<div class="c">${U.esc(br.name)}</div>` : ''}${t.showCompanyAddress ? `<div class="c">${coAddr}</div><div class="c">${U.esc(br?.phone || s.phone || '')}</div>` : ''}${t.showNtn && coNtn ? `<div class="c">${coNtn}</div>` : ''}`}
+      <div class="c b ttl">${U.esc(title)}</div>
+      <div class="kv"><span>No.</span><b>${U.esc(doc.no || '')}</b></div>${t.showDate ? `<div class="kv"><span>Date</span><b>${U.fdate(doc.date)}</b></div>` : ''}
+      ${t.showBillTo && p.name ? `<div class="kv"><span>${PT === 'C' ? 'Customer' : 'Supplier'}</span><b>${U.esc(p.name)}</b></div>` : ''}${t.showRef && doc.ref ? `<div class="kv"><span>Ref</span><b>${U.esc(doc.ref)}</b></div>` : ''}
+      <div class="dash"></div>
+      ${doc.lines.map((l, i) => `<div class="it"><div>${t.colNum ? (i + 1) + '. ' : ''}${U.esc(nm(l))}${t.colSku && sku(l) ? ` <small>(${U.esc(sku(l))})</small>` : ''}</div>
+        <div class="kv"><span>${U.qty(l.qty)}${t.colUnit ? ' ' + U.esc(unit(l)) : ''}${priced ? ' × ' + U.money(l.rate) + (U.num(l.disc) && t.colDisc ? ` −${l.disc}%` : '') : ''}</span>${priced ? `<b>${U.money(l.amount ?? U.num(l.qty) * U.num(l.rate))}</b>` : ''}</div></div>`).join('')}
+      <div class="dash"></div>
+      ${t.showQtyTotal ? `<div class="kv"><span>Total qty</span><b>${U.qty(U.sum(doc.lines, l => U.num(l.qty)))}</b></div>` : ''}
+      ${priced ? `<div class="kv"><span>Sub total</span><b>${U.money(tot.gross)}</b></div>${t.showDiscount && tot.discount ? `<div class="kv"><span>Discount</span><b>${U.money(-tot.discount)}</b></div>` : ''}${tot.tax ? `<div class="kv"><span>Sales tax ${rate}%</span><b>${U.money(tot.tax)}</b></div>` : ''}${t.showFreight && tot.other ? `<div class="kv"><span>${U.esc(t.freightLabel)}</span><b>${U.money(tot.other)}</b></div>` : ''}
+      <div class="kv big b"><span>${U.esc(t.totalLabel)}</span><b>${s.currency} ${U.money(tot.total)}</b></div>${t.showReceived && received ? `<div class="kv"><span>Received</span><b>${U.money(received)}</b></div>` : ''}${t.showBalance && T.posts ? `<div class="kv"><span>Balance</span><b>${U.money(open)}</b></div>` : ''}
+      ${t.showWords ? `<div class="words">${amountInWords(tot.total, t.wordsSystem)}</div>` : ''}` : ''}
+      ${t.showNotes && doc.notes ? `<div class="dash"></div><div>${U.esc(doc.notes)}</div>` : ''}
+      ${t.showBank && t.bankText ? `<div class="dash"></div><div class="pre">${U.esc(t.bankText)}</div>` : ''}
+      ${t.footerText ? `<div class="dash"></div><div class="c">${U.esc(t.footerText)}</div>` : ''}${t.footerImage ? `<img class="pd-fimg" src="${t.footerImage}">` : ''}
+      <div class="c sm">${U.esc(s.invoiceNote || '')}</div></div>`;
+  }
+
+  // ---- A4 ----
+  const cols = [];
+  if (t.colNum) cols.push(['#', (l, i) => i + 1, '']);
+  cols.push(['Item & Description', l => `<b>${U.esc(nm(l))}</b>${t.colDesc && l.desc ? `<div class="sm">${U.esc(l.desc)}</div>` : ''}`, 'w']);
+  if (t.colSku) cols.push(['SKU', l => U.esc(sku(l)), '']);
+  if (t.colQty) cols.push(['Qty', l => U.qty(l.qty) + (t.colUnit && unit(l) ? ' ' + U.esc(unit(l)) : ''), 'num']);
+  if (priced) {
+    cols.push(['Rate', l => U.money(l.rate), 'num']);
+    if (t.colDisc) cols.push(['Disc %', l => U.num(l.disc) || '', 'num']);
+    const amt = l => U.num(l.amount ?? U.num(l.qty) * U.num(l.rate) * (1 - U.num(l.disc) / 100));
+    if (t.colExcl) cols.push(['Excl. Tax', l => U.money(amt(l)), 'num']);
+    if (t.colTax) cols.push([`Tax ${rate}%`, l => U.money(amt(l) * rate / 100), 'num']);
+    cols.push([t.colIncl ? 'Incl. Tax' : 'Amount', l => U.money(t.colIncl ? amt(l) * (1 + rate / 100) : amt(l)), 'num']);
+  }
+  const qtyIdx = cols.findIndex(c => c[0] === 'Qty');
+  const salesman = DB.data.salesmen?.find(x => x.id === doc.salesmanId)?.name;
+  const meta = [t.showDate && ['Date', U.fdate(doc.date)], t.showTerms && PT === 'C' && T.posts && ['Terms', terms], t.showDueDate && doc.dueDate && ['Due date', U.fdate(doc.dueDate)],
+    t.showRef && doc.ref && [PT === 'C' ? 'Reference / PO#' : 'Supplier ref.', U.esc(doc.ref)], doc.fromNo && ['Against', U.esc(doc.fromNo)], t.showSalesman && salesman && ['Salesman', U.esc(salesman)],
+    t.showBalanceTop && T.posts && ['Balance due', `${s.currency} ${U.money(open)}`]].filter(Boolean);
+  const sigs = String(t.sigLabels || '').split(',').map(x => x.trim()).filter(Boolean);
+  return `<div class="pdoc p4" style="${style}">${wm}
+    ${t.headerImage ? `<img class="pd-himg" src="${t.headerImage}">` : `<div class="pd-head"><div class="pd-co">${t.showLogo && s.logo ? `<img class="pd-logo" src="${s.logo}">` : ''}<div>${t.showCompanyName ? `<div class="pd-coname">${U.esc(s.company)}</div>` : ''}${br && DB.data.branches.length > 1 ? `<div>${U.esc(br.name)}</div>` : ''}${t.showCompanyAddress ? `<div>${coAddr}</div><div>${[br?.phone || s.phone, s.email].filter(Boolean).map(U.esc).join(' · ')}</div>` : ''}${t.showNtn && coNtn ? `<div>${coNtn}</div>` : ''}</div></div></div>`}
+    <div class="pd-titlebar"><div class="pd-title">${U.esc(title)}</div><div class="pd-no">${U.esc(doc.no || '')}</div></div>
+    <div class="pd-top"><div class="pd-bill">${t.showBillTo && (p.name || doc[pk]) ? `<small>${PT === 'C' ? 'Bill To' : 'Supplier'}</small><b>${U.esc(p.name || '')}</b>${t.showPartyAddress ? `<div>${U.esc([p.address, p.city].filter(Boolean).join(', '))}</div>` : ''}${t.showPartyPhone && p.phone ? `<div>Phone: ${U.esc(p.phone)}</div>` : ''}${t.showPartyNtn && (p.ntn || p.strn) ? `<div>${[p.ntn ? 'NTN: ' + U.esc(p.ntn) : '', p.strn ? 'STRN: ' + U.esc(p.strn) : ''].filter(Boolean).join(' · ')}</div>` : ''}` : ''}</div>
+      <table class="pd-meta">${meta.map(([k, v]) => `<tr><td>${k}:</td><td>${v}</td></tr>`).join('')}</table></div>
+    <table class="pd-items"><thead><tr>${cols.map(c => `<th class="${c[2]}">${c[0]}</th>`).join('')}</tr></thead><tbody>
+      ${doc.lines.map((l, i) => `<tr>${cols.map(c => `<td class="${c[2]}">${c[1](l, i)}</td>`).join('')}</tr>`).join('')}</tbody>
+      ${t.showQtyTotal && qtyIdx >= 0 ? `<tfoot><tr>${cols.map((c, i) => `<td class="${c[2]}">${i === qtyIdx ? `<b>${U.qty(U.sum(doc.lines, l => U.num(l.qty)))}</b>` : i === qtyIdx - 1 ? '<b>Total</b>' : priced && i === cols.length - 1 ? `<b>${U.money(t.colIncl ? tot.net + tot.tax : tot.net)}</b>` : ''}</td>`).join('')}</tr></tfoot>` : ''}</table>
+    ${priced ? `<div class="pd-bottom"><div class="pd-left">
+        ${t.showWords ? `<p><b>Amount in words:</b> ${amountInWords(tot.total, t.wordsSystem)}</p>` : ''}
+        ${t.showTaxSummary && tot.tax ? `<table class="pd-taxsum"><tr><th>Tax</th><th class="num">Taxable value</th><th class="num">Tax</th></tr><tr><td>Sales tax @ ${rate}%</td><td class="num">${U.money(tot.net)}</td><td class="num">${U.money(tot.tax)}</td></tr></table>` : ''}
+      </div><table class="pd-totals">
+        <tr><td>Sub total</td><td>${U.money(tot.gross)}</td></tr>
+        ${t.showDiscount && tot.discount ? `<tr><td>Discount</td><td>${U.money(-tot.discount)}</td></tr>` : ''}
+        ${tot.tax ? `<tr><td>Sales tax ${rate}%</td><td>${U.money(tot.tax)}</td></tr>` : ''}
+        ${t.showFreight ? `<tr><td>${U.esc(t.freightLabel)}</td><td>${s.currency} ${U.money(tot.other)}</td></tr>` : ''}
+        <tr class="g"><td>${U.esc(t.totalLabel)}</td><td>${s.currency} ${U.money(tot.total)}</td></tr>
+        ${t.showReceived && (T.posts || received) ? `<tr><td>${PT === 'C' ? 'Received amount' : 'Paid amount'}</td><td>${s.currency} ${U.money(T.posts ? tot.total - open : received)}</td></tr>` : ''}
+        ${t.showBalance && T.posts ? `<tr class="g2"><td>Balance due</td><td>${s.currency} ${U.money(open)}</td></tr>` : ''}
+      </table></div>` : ''}
+    ${t.showNotes && doc.notes ? `<div class="pd-sec"><b>Notes:</b><div class="pre">${U.esc(doc.notes)}</div></div>` : ''}
+    ${t.showTermsText && t.termsText ? `<div class="pd-sec"><b>Terms & conditions:</b><div class="pre">${U.esc(t.termsText)}</div></div>` : ''}
+    ${t.showBank && t.bankText ? `<div class="pd-sec pd-bank"><b>Bank details:</b><div class="pre">${U.esc(t.bankText)}</div></div>` : ''}
+    ${t.stampImage ? `<img class="pd-stamp" src="${t.stampImage}">` : ''}
+    ${t.showSignatures && sigs.length ? `<div class="pd-signs">${sigs.map(x => `<div>${U.esc(x)}</div>`).join('')}</div>` : ''}
+    ${PT === 'C' && s.invoiceNote ? `<p class="pd-note">${U.esc(s.invoiceNote)}</p>` : ''}
+    ${t.footerText ? `<div class="pd-ftext">${U.esc(t.footerText)}</div>` : ''}${t.footerImage ? `<img class="pd-fimg" src="${t.footerImage}">` : ''}
+  </div>`;
+}
+
+/* ---------- print helper ---------- */
+function doPrint(html, layout) {
+  let root = document.getElementById('printRoot');
+  if (!root) { root = document.createElement('div'); root.id = 'printRoot'; document.body.appendChild(root); }
+  root.innerHTML = html;
+  let ps = document.getElementById('pageSize');
+  if (!ps) { ps = document.createElement('style'); ps.id = 'pageSize'; document.head.appendChild(ps); }
+  ps.textContent = layout === '80mm' ? '@page{size:80mm auto;margin:3mm}' : '@page{size:A4;margin:10mm}';
+  document.body.classList.add('printing');
+  const done = () => { document.body.classList.remove('printing'); ps.textContent = ''; window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  setTimeout(() => { try { window.print(); } catch (e) { done(); toast('Printing is not available here', 'err'); } }, 60);
+}
+function printTradeDoc(kind, doc, variant) {
+  doPrint(renderDocPrint(kind, doc, variant), getTpl(variant || kind).layout);
+  logActivity(TK[kind].key, doc.id, variant === 'packing' ? 'Packing slip printed' : variant === 'dn' ? 'Delivery note printed' : 'Printed');
+}
+function logActivity(key, id, what) {
+  const d = DB.get(key, id); if (!d) return;
+  d.log = (d.log || []).concat({ at: new Date().toISOString(), what });
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(DB.data)); } catch (e) {}
+}
+
+/* ---------- image helper (resized to keep storage small) ---------- */
+function readImage(file, maxW, cb) {
+  const fr = new FileReader();
+  fr.onload = () => { const img = new Image(); img.onload = () => {
+    const sc = Math.min(1, maxW / img.width), c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    cb(c.toDataURL(file.type === 'image/jpeg' ? 'image/jpeg' : 'image/png', 0.85));
+  }; img.onerror = () => toast('That file is not an image', 'err'); img.src = fr.result; };
+  fr.readAsDataURL(file);
+}
+
+/* ---------- template editor page ---------- */
+function sampleDoc(kind) {
+  const T = TK[kind === 'packing' ? 'invoice' : kind] || TK.invoice;
+  const real = DB.data[T.key].filter(d => !d.void).slice(-1)[0];
+  if (real) return real;
+  return { _sample: true, no: T.prefix + '-0001', date: U.today(), dueDate: U.addDays(U.today(), 30), ref: 'PO-12345', taxRate: DB.data.settings.taxRate, otherCharges: 500, notes: 'In case of any discrepancy please report within seven days.',
+    _party: { name: 'Sample Customer (Pvt) Ltd', address: 'Office 12, Main Boulevard', city: 'Lahore', phone: '0300-1234567', ntn: '1234567-8', terms: 30 },
+    lines: [{ _name: 'Split AC 1.5 Ton Inverter', _sku: 'AC-150', _unit: 'Pcs', desc: 'With installation kit', qty: 2, rate: 148000, disc: 5 }, { _name: 'Copper Pipe 3/8"', _sku: 'CP-38', _unit: 'Ft', qty: 30, rate: 450, disc: 0 }, { _name: 'Installation Service', _sku: 'SRV-1', _unit: 'Job', qty: 2, rate: 3500, disc: 0 }] };
+}
+route('/templates', () => {
+  const qs = new URLSearchParams(location.hash.split('?')[1] || '');
+  const kind = TPL_TYPES.some(x => x[0] === qs.get('type')) ? qs.get('type') : 'invoice';
+  const s = DB.data.settings; s.tpl = s.tpl || {};
+  const t = getTpl(kind);
+  const ctl = ([k, label, type, o]) => {
+    const v = t[k];
+    if (type === 'check') return `<label class="tchk"><input type="checkbox" data-t="${k}" ${v ? 'checked' : ''}> ${label}</label>`;
+    if (type === 'select') return `<label class="tfld">${label}<select data-t="${k}">${opts(o, v, null)}</select></label>`;
+    if (type === 'textarea') return `<label class="tfld">${label}<textarea data-t="${k}" rows="3">${U.esc(v)}</textarea></label>`;
+    if (type === 'image') return `<div class="tfld">${label}<div class="timg">${v ? `<img src="${v}">` : '<span class="muted sm">None</span>'}<input type="file" accept="image/*" data-img="${k}">${v ? `<button class="btn sm ghost" data-clr="${k}">Remove</button>` : ''}</div></div>`;
+    if (type === 'color') return `<label class="tfld">${label}<input type="color" data-t="${k}" value="${U.esc(v)}"></label>`;
+    return `<label class="tfld">${label}<input type="${type}" data-t="${k}" value="${U.esc(v)}"></label>`;
+  };
+  page('Document Templates', `<div class="tpl-wrap">
+    <div class="card tpl-types">${TPL_TYPES.map(([k, l]) => `<a href="#/templates?type=${k}" class="${k === kind ? 'active' : ''}">${l}${s.tpl[k] ? ' <span class="tag">Custom</span>' : ''}</a>`).join('')}</div>
+    <div class="card tpl-opts">
+      <div class="tpl-logo"><b>Company logo</b> <span class="muted sm">(used on all documents)</span><div class="timg">${s.logo ? `<img src="${s.logo}">` : '<span class="muted sm">No logo</span>'}<input type="file" accept="image/*" id="logoIn">${s.logo ? '<button class="btn sm ghost" id="logoClr">Remove</button>' : ''}</div></div>
+      ${TPL_GROUPS.map(([g, fs], i) => `<details ${i < 2 ? 'open' : ''}><summary>${g}</summary><div class="tgrp">${fs.map(ctl).join('')}</div></details>`).join('')}
+      <div class="tpl-act"><button class="btn" id="tReset">Reset to default</button><button class="btn" id="tAll">Apply to all types</button><button class="btn primary" id="tSave">Save template</button></div>
+    </div>
+    <div class="tpl-prev"><div class="prev-bar"><b>Preview</b><span class="muted sm">${sampleDoc(kind)._sample ? 'sample data' : 'latest document'}</span><span class="sp"></span><button class="btn sm" id="tPrint">${icon('print')} Test print</button></div><div class="paper-wrap"><div id="tPrev"></div></div></div>
+  </div>`, '', [['Settings', '#/settings/company']]);
+  const cur = Object.assign({}, t);
+  const tk = kind === 'packing' ? 'invoice' : kind;
+  const draw = () => { const save = s.tpl[kind]; s.tpl[kind] = cur; $('#tPrev').innerHTML = renderDocPrint(tk, sampleDoc(kind), kind === 'packing' ? 'packing' : null); s.tpl[kind] = save; $('#tPrev').className = cur.layout === '80mm' ? 'paper p80w' : 'paper'; };
+  $$('[data-t]').forEach(el => el.oninput = el.onchange = () => { const k = el.dataset.t; cur[k] = el.type === 'checkbox' ? el.checked : el.type === 'number' ? U.num(el.value) : el.value; draw(); });
+  $$('[data-img]').forEach(el => el.onchange = () => { const f = el.files[0]; if (f) readImage(f, el.dataset.img === 'stampImage' ? 400 : 1400, url => { cur[el.dataset.img] = url; s.tpl[kind] = cur; DB.save(); go(location.hash); }); });
+  $$('[data-clr]').forEach(b => b.onclick = () => { cur[b.dataset.clr] = ''; s.tpl[kind] = cur; DB.save(); go(location.hash); });
+  $('#logoIn').onchange = e => { const f = e.target.files[0]; if (f) readImage(f, 500, url => { s.logo = url; DB.save(); toast('Logo saved'); go(location.hash); }); };
+  if ($('#logoClr')) $('#logoClr').onclick = () => { s.logo = ''; DB.save(); go(location.hash); };
+  $('#tSave').onclick = () => { s.tpl[kind] = cur; DB.save(); toast('Template saved for ' + TPL_TYPES.find(x => x[0] === kind)[1]); };
+  $('#tReset').onclick = () => confirmBox('Reset this template to the default settings?', () => { delete s.tpl[kind]; DB.save(); go(location.hash); }, 'Reset');
+  $('#tAll').onclick = () => confirmBox('Copy these settings (except title and layout-specific columns) to every document type?', () => {
+    TPL_TYPES.forEach(([k]) => { const c = Object.assign({}, cur); delete c.title; if (['dn', 'dnr', 'packing', 'pr'].includes(k)) Object.assign(c, { colRate: false, showReceived: false, showBalance: false, showWords: false }); s.tpl[k] = Object.assign({}, s.tpl[k] || {}, c); });
+    DB.save(); toast('Applied to all document types'); go(location.hash);
+  }, 'Apply');
+  $('#tPrint').onclick = () => { const save = s.tpl[kind]; s.tpl[kind] = cur; doPrint(renderDocPrint(tk, sampleDoc(kind), kind === 'packing' ? 'packing' : null), cur.layout); s.tpl[kind] = save; };
+  draw();
+});
+
+</script>
+<script>
+'use strict';
+/* =========================================================
+   Document view: details preview, activity log, journal,
+   references; actions (edit, print, PDF, email, convert,
+   duplicate, void, packing slip, delivery note, delete)
+   ========================================================= */
+function ddMenu(label, items, cls = '') {
+  return `<div class="dd ${cls}"><button class="btn dd-btn" type="button">${label}</button><div class="dd-menu">${items.filter(Boolean).map(i => i === '-' ? '<hr>' : `<button type="button" class="${i.cls || ''}" data-act="${i.act}" ${i.arg ? `data-arg="${U.esc(i.arg)}"` : ''}>${i.label}</button>`).join('')}</div></div>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.dd-btn');
+  $$('.dd.open').forEach(d => { if (!b || d !== b.parentElement) d.classList.remove('open'); });
+  if (b) { e.stopPropagation(); b.parentElement.classList.toggle('open'); }
+});
+
+function docActions(kind, d) {
+  const T = TK[kind], items = [];
+  items.push({ act: 'view', label: 'View details' }, { act: 'edit', label: 'Edit' }, { act: 'print', label: 'Print' }, { act: 'pdf', label: 'Download PDF' });
+  if (T.S && ['invoice', 'so', 'dn', 'estimate'].includes(kind)) items.push({ act: 'packing', label: 'Print packing slip' });
+  if (T.S && ['invoice', 'so'].includes(kind)) items.push({ act: 'dnprint', label: 'Print delivery note' });
+  items.push('-');
+  T.to.forEach(k => items.push({ act: 'convert', arg: k, label: 'Convert to ' + TK[k].singular.toLowerCase() }));
+  if (kind === 'invoice') items.push({ act: 'pay', label: 'Record payment received' });
+  if (kind === 'bill') items.push({ act: 'pay', label: 'Record payment made' });
+  items.push({ act: 'dup', label: 'Duplicate' }, { act: 'email', label: 'Send by email' });
+  items.push('-', d.void ? { act: 'unvoid', label: 'Restore (undo void)' } : { act: 'void', label: 'Make void', cls: 'warn' }, { act: 'delete', label: 'Delete', cls: 'danger' });
+  return items;
+}
+function runDocAction(kind, d, act, arg, after) {
+  const T = TK[kind];
+  const lockedOk = () => { if (isLocked(d.date)) { toast(lockMsg(), 'err'); return false; } return true; };
+  switch (act) {
+    case 'view': return go(`#/v/${kind}/${d.id}`);
+    case 'edit': if (d.void) return toast('Restore this document before editing it', 'err'); return go(`#/${T.path}/${d.id}`);
+    case 'print': return printTradeDoc(kind, d);
+    case 'pdf': toast('In the print window choose “Save as PDF” as the printer'); return printTradeDoc(kind, d);
+    case 'packing': return printTradeDoc(kind, d, 'packing');
+    case 'dnprint': return printTradeDoc(kind, d, 'dn');
+    case 'convert': return go(`#/${TK[arg].path}/new?src=${kind}&from=${d.id}`);
+    case 'pay': return go(kind === 'invoice' ? `#/receipts?new=${d.customerId}` : `#/payments?new=${d.supplierId}`);
+    case 'dup': return go(`#/${T.path}/new?dup=${d.id}`);
+    case 'email': {
+      const p = party(T.S ? 'C' : 'S', d[T.S ? 'customerId' : 'supplierId']) || {};
+      const t = calcDoc(d), s = DB.data.settings;
+      const body = `Dear ${p.name || 'Sir/Madam'},\n\nPlease find the details of ${T.singular} ${d.no} dated ${U.fdate(d.date)}.\n\nTotal: ${s.currency} ${U.money(t.total)}${d.dueDate ? `\nDue date: ${U.fdate(d.dueDate)}` : ''}\n\n(The PDF can be attached after saving it with Download PDF.)\n\nRegards,\n${s.company}${s.phone ? '\n' + s.phone : ''}`;
+      logActivity(T.key, d.id, 'Email drafted' + (p.email ? ' to ' + p.email : ''));
+      location.href = `mailto:${encodeURIComponent(p.email || '')}?subject=${encodeURIComponent(`${T.singular} ${d.no} from ${s.company}`)}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+    case 'void':
+      if (!lockedOk()) return;
+      return confirmBox(`Void ${T.singular.toLowerCase()} ${d.no}? It stays on record (marked VOID) but its accounting and stock entries are reversed.`, () => {
+        const x = DB.get(T.key, d.id); x.void = true; x.log = (x.log || []).concat({ at: new Date().toISOString(), what: 'Voided' }); DB.save(); toast(d.no + ' voided'); after ? after() : go(location.hash);
+      }, 'Make void');
+    case 'unvoid': {
+      if (!lockedOk()) return;
+      const x = DB.get(T.key, d.id); x.void = false; x.log = (x.log || []).concat({ at: new Date().toISOString(), what: 'Restored from void' }); DB.save(); toast(d.no + ' restored'); return after ? after() : go(location.hash);
+    }
+    case 'delete':
+      if (!lockedOk()) return;
+      return confirmBox(`Delete ${T.singular.toLowerCase()} ${d.no} permanently? Its postings will be reversed and it cannot be recovered.`, () => { DB.remove(T.key, d.id); toast('Deleted'); go('#/' + T.path); });
+  }
+}
+
+route('/v/:kind/:id', (kind, id, qs) => {
+  const T = TK[kind]; if (!T) return go('#/dashboard');
+  const d = DB.get(T.key, id); if (!d) return go('#/' + T.path);
+  const tab = new URLSearchParams(location.hash.split('?')[1] || '').get('tab') || 'details';
+  const PT = T.S ? 'C' : 'S', pk = T.S ? 'customerId' : 'supplierId';
+  const st = d.void ? 'Void' : tradeStatus(kind, d), t = getTpl(kind);
+  const jl = Ledger.all().lines.filter(l => l.docId === d.id);
+  // references
+  const refs = [];
+  const addRef = (k, x, rel) => x && !refs.some(r => r.x.id === x.id) && refs.push({ k, x, rel });
+  if (d.fromId) for (const k in TK) addRef(k, DB.data[TK[k].key].find(z => z.id === d.fromId), 'Created from');
+  for (const k in TK) DB.data[TK[k].key].filter(z => z.fromId === d.id || z.dnId === d.id || z.grnId === d.id || z.invoiceId === d.id || z.billId === d.id).forEach(z => addRef(k, z, 'Converted to'));
+  if (d.dnId) addRef('dn', DB.get('deliveryNotes', d.dnId), 'Delivery note');
+  if (d.grnId) addRef('grn', DB.get('grns', d.grnId), 'Goods receive note');
+  const pays = kind === 'invoice' ? DB.data.receipts.filter(r => r.customerId === d.customerId && r.date >= d.date) : kind === 'bill' ? DB.data.payments.filter(r => r.supplierId === d.supplierId && r.date >= d.date) : [];
+  const tabs = [['details', 'Details'], ['activity', 'Activity Log'], ['journal', 'Journal'], ['refs', 'References']];
+  let body = '';
+  if (tab === 'details') body = `<div class="paper-wrap"><div class="paper ${t.layout === '80mm' ? 'p80w' : ''}">${renderDocPrint(kind, d)}</div></div>`;
+  if (tab === 'activity') body = table([{ label: 'When', get: a => new Date(a.at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }) }, { label: 'Activity', get: a => a.what }],
+    (d.log && d.log.length ? d.log : [{ at: new Date(d.createdAt || Date.now()).toISOString(), what: 'Created' }]).slice().reverse());
+  if (tab === 'journal') body = d.void ? '<div class="empty">This document is void, so it has no accounting entries.</div>' : table([{ label: 'Account', get: l => accName(l.accountId) }, { label: 'Party', get: l => l.partyId ? partyName(l.partyType, l.partyId) : '' }, { label: 'Narration', get: l => l.memo }, { label: 'Branch', get: l => branchName(l.branchId) }, { label: 'Debit', cls: 'num', get: l => U.money(l.debit, true) }, { label: 'Credit', cls: 'num', get: l => U.money(l.credit, true) }],
+    jl, { empty: 'This document does not post to the accounts (no accounting entry).', foot: [{}, {}, {}, { v: '<b>Total</b>' }, { cls: 'num', v: `<b>${U.money(U.sum(jl, l => l.debit))}</b>` }, { cls: 'num', v: `<b>${U.money(U.sum(jl, l => l.credit))}</b>` }] });
+  if (tab === 'refs') body = table([{ label: 'Relation', get: r => r.rel }, { label: 'Document', get: r => TK[r.k].singular }, { label: 'Number', html: r => `<b>${U.esc(r.x.no)}</b>` }, { label: 'Date', get: r => U.fdate(r.x.date) }, { label: 'Status', html: r => badge(r.x.void ? 'Void' : tradeStatus(r.k, r.x)) }],
+    refs, { rowAttr: r => `data-href="#/v/${r.k}/${r.x.id}" class="clickable"`, empty: 'No linked documents.' }) +
+    (pays.length ? `<h3 class="sec pad-x">${kind === 'invoice' ? 'Payments received' : 'Payments made'} from this ${kind === 'invoice' ? 'customer' : 'supplier'} since this date</h3>` + table([{ label: 'Number', html: r => `<b>${U.esc(r.no)}</b>` }, { label: 'Date', get: r => U.fdate(r.date) }, { label: 'Account', get: r => acc(r.accountId)?.name }, { label: 'Amount', cls: 'num', get: r => U.money(r.amount) }], pays) : '');
+
+  const tot = T.priced ? calcDoc(d).total : null;
+  page(`${T.singular} ${d.no}`, `<div class="card vhead">
+      <div class="vh-top"><div><div class="vh-no">${U.esc(d.no)} ${badge(st)}</div><div class="muted sm">${U.esc(d[pk] ? partyName(PT, d[pk]) : '')}${DB.data.branches.length > 1 ? ' · Branch: ' + U.esc(branchName(d.branchId || defBranch())) : ''} · ${U.fdate(d.date)}${tot !== null ? ` · <b>${DB.data.settings.currency} ${U.money(tot)}</b>` : ''}</div></div>
+      <div class="vh-tools">
+        <button class="btn" data-act="edit">✎ Edit</button><button class="btn" data-act="print">${icon('print')} Print</button><button class="btn" data-act="pdf">${icon('dl')} PDF</button><button class="btn" data-act="email">✉ Email</button>
+        ${T.to.length ? ddMenu('⇄ Convert ▾', T.to.map(k => ({ act: 'convert', arg: k, label: TK[k].singular }))) : ''}
+        ${kind === 'invoice' || kind === 'bill' ? `<button class="btn" data-act="pay">$ Record payment</button>` : ''}
+        ${ddMenu('More ▾', [T.S && ['invoice', 'so', 'dn', 'estimate'].includes(kind) && { act: 'packing', label: 'Print packing slip' }, T.S && ['invoice', 'so'].includes(kind) && { act: 'dnprint', label: 'Print delivery note' },
+          { act: 'dup', label: 'Duplicate' }, '-', { act: 'tplA4', label: (t.layout === 'A4' ? '✓ ' : '') + 'Template: A4' }, { act: 'tpl80', label: (t.layout === '80mm' ? '✓ ' : '') + 'Template: 80mm thermal' }, { act: 'tplEdit', label: 'Edit template…' }, '-',
+          d.void ? { act: 'unvoid', label: 'Restore (undo void)' } : { act: 'void', label: 'Make void', cls: 'warn' }, { act: 'delete', label: 'Delete', cls: 'danger' }], 'right')}
+      </div></div>
+      <div class="vtabs">${tabs.map(([k, l]) => `<a href="#/v/${kind}/${d.id}?tab=${k}" class="${k === tab ? 'active' : ''}">${l}</a>`).join('')}</div></div>
+    <div class="card ${tab === 'details' ? 'vbody-paper' : ''}">${body}</div>`, '', [[T.title, '#/' + T.path]]);
+  bindRowLinks();
+  $$('#main [data-act]').forEach(b => b.onclick = () => {
+    const a = b.dataset.act;
+    if (a === 'tplA4' || a === 'tpl80') { const s = DB.data.settings; s.tpl = s.tpl || {}; s.tpl[kind] = Object.assign(s.tpl[kind] || {}, { layout: a === 'tplA4' ? 'A4' : '80mm' }); DB.save(); return go(location.hash); }
+    if (a === 'tplEdit') return go('#/templates?type=' + kind);
+    runDocAction(kind, DB.get(T.key, id), a, b.dataset.arg);
+  });
+});
 
 </script>
 <script>
