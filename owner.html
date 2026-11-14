@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Maju ERP · Owner panel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f766e'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='700' font-size='13' fill='white' text-anchor='middle'%3EMJ%3C/text%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#18212b;--muted:#667385;--line:#e3e8ee;--line2:#eef2f5;--side:#0d1b24;--acc:#0f766e;--acc2:#0b5f59;--acc-soft:#e6f3f1;--red:#c2410c;--red-soft:#fdeee6;--green:#15803d;--amber:#b45309;--blue:#1d4ed8;--r:10px;--font:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--font)}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:var(--side);color:#fff;display:flex;align-items:center;gap:14px;padding:12px 22px;position:sticky;top:0;z-index:20}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--acc);display:grid;place-items:center;font-weight:700}
+header b{font-size:15px}header small{display:block;color:#8fa6b2;font-size:11.5px}
+header nav{display:flex;gap:4px;margin-left:24px;flex:1;flex-wrap:wrap}
+header nav a{padding:7px 12px;border-radius:7px;color:#b9c7cf;font-weight:550}
+header nav a:hover{background:#14262f;color:#fff}header nav a.on{background:var(--acc);color:#fff}
+.who{font-size:12.5px;color:#b9c7cf;display:flex;gap:10px;align-items:center}
+.who button{background:#14262f;border:1px solid #23404f;color:#fff;border-radius:7px;padding:5px 10px;cursor:pointer}
+main{padding:22px;max-width:1400px;margin:0 auto}
+h1{font-size:21px;margin:0}
+.head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}.head .sp{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:16px;overflow:hidden}
+.pad{padding:16px 18px}
+h3{margin:0;font-size:15px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;cursor:default}
+.stat[data-f]{cursor:pointer}.stat[data-f]:hover{border-color:var(--acc)}
+.stat small{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.stat b{display:block;font-size:24px;margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;font-weight:550;white-space:nowrap}
+.btn:hover{border-color:#c9d2db;background:#fafbfc}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}.btn.primary:hover{background:var(--acc2)}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn.sm{height:28px;font-size:12.5px;padding:0 10px}
+.btn:disabled{opacity:.6;cursor:wait}
+input,select,textarea{height:36px;border:1px solid var(--line);border-radius:8px;padding:0 10px;background:#fff;width:100%}
+textarea{height:auto;padding:8px 10px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc-soft);border-color:var(--acc)}
+.tools{display:flex;gap:10px;flex-wrap:wrap}.tools input{max-width:280px}.tools select{max-width:180px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:650;padding:10px 12px;border-bottom:1px solid var(--line);background:#fafbfc;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line2);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fafcfd}
+.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+td small{display:block;color:var(--muted)}
+.acts{white-space:nowrap;text-align:right}.acts .btn{margin-left:4px}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:650;white-space:nowrap}
+.b-active{background:#e7f6ec;color:var(--green)}.b-trial{background:#eef2ff;color:var(--blue)}
+.b-due{background:#fef5e4;color:var(--amber)}.b-expired,.b-blocked{background:var(--red-soft);color:var(--red)}
+.b-user{background:var(--line2);color:var(--muted)}.b-admin{background:var(--acc-soft);color:var(--acc)}
+.overlay{position:fixed;inset:0;background:rgba(13,27,36,.45);display:grid;place-items:center;padding:20px;z-index:60}
+.modal{background:#fff;border-radius:12px;width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal.wide{max-width:860px}
+.m-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+.m-head h3{font-size:16px}.m-head button{border:0;background:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+.m-body{padding:16px 18px;overflow:auto}
+.m-foot{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.fld{display:grid;gap:5px}.fld label{font-size:12.5px;font-weight:600}.fld.w{grid-column:1/-1}
+.fld small{color:var(--muted);font-size:12px}
+.code{font:700 20px/1 ui-monospace,Consolas,monospace;letter-spacing:3px;background:var(--acc-soft);color:var(--acc);padding:10px 14px;border-radius:8px;display:inline-block}
+.note{color:var(--muted);font-size:13px}
+.hint{background:#f2f8f7;border:1px solid #d5ebe7;border-radius:8px;padding:10px 12px;font-size:13px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;font-size:13.5px}.kv span{color:var(--muted)}
+#toasts{position:fixed;right:18px;bottom:18px;display:grid;gap:8px;z-index:90}
+.toast{background:#18212b;color:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:.3s}
+.toast.err{background:var(--red)}.toast.out{opacity:0;transform:translateY(8px)}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(160deg,#0d1b24 0%,#14262f 55%,#0f766e 140%)}
+.login .box{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:grid;gap:12px}
+.err{background:var(--red-soft);color:#9a3412;border-radius:8px;padding:10px 12px;font-size:13px}
+.tabs2{display:flex;gap:6px;margin-bottom:12px}
+@media (max-width:760px){header{flex-wrap:wrap}header nav{margin-left:0;order:3;width:100%}.grid{grid-template-columns:1fr}.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div><div id="modalRoot"></div><div id="toasts"></div>
+<script>
+'use strict';
+const CFG = window.MAJU_CONFIG || {};
+const APP_URL = CFG.appUrl || location.href.replace(/owner\.html.*$/, '');
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = n => (+n || 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+const fdate = d => { if (!d) return '—'; const [y, m, dd] = String(d).slice(0, 10).split('-'); return `${dd}-${'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[+m - 1]}-${y}`; };
+const addMonths = (iso, n) => { const [y, m, d] = iso.split('-').map(Number); const x = new Date(Date.UTC(y, m - 1 + n, d)); if (x.getUTCDate() !== d) x.setUTCDate(0); x.setUTCDate(x.getUTCDate() - 1); return x.toISOString().slice(0, 10); };
+const addDays = (iso, n) => { const x = new Date(iso + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+const METHODS = ['Bank transfer', 'JazzCash', 'Easypaisa', 'Cash', 'Cheque', 'Other'];
+
+function toast(msg, kind = 'ok') {
+  const t = document.createElement('div'); t.className = 'toast ' + kind; t.textContent = msg; $('#toasts').appendChild(t);
+  setTimeout(() => t.classList.add('out'), 2800); setTimeout(() => t.remove(), 3200);
+}
+function modal(title, body, foot, wide) {
+  $('#modalRoot').innerHTML = `<div class="overlay"><div class="modal ${wide ? 'wide' : ''}"><div class="m-head"><h3>${esc(title)}</h3><button data-close aria-label="Close">×</button></div><div class="m-body">${body}</div><div class="m-foot">${foot || '<button class="btn" data-close>Close</button>'}</div></div></div>`;
+  $$('#modalRoot [data-close]').forEach(b => b.onclick = closeModal);
+  $('#modalRoot .overlay').addEventListener('mousedown', e => { if (e.target.classList.contains('overlay')) closeModal(); });
+  setTimeout(() => { if (!$('#modalRoot').contains(document.activeElement)) $('#modalRoot input, #modalRoot select')?.focus(); }, 30);
+  return $('#modalRoot .modal');
+}
+function closeModal() { $('#modalRoot').innerHTML = ''; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+const form = root => Object.fromEntries($$('[name]', root).map(el => [el.name, el.type === 'checkbox' ? el.checked : el.value.trim()]));
+const copy = (text, what) => (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => toast((what || 'Text') + ' copied'), () => modal('Copy this', `<textarea rows="8">${esc(text)}</textarea>`));
+
+/* ---------------- state ---------------- */
+const S = { sb: null, user: null, companies: [], plans: [], settings: {}, tab: 'companies', filter: 'all', search: '' };
+const rpc = async (fn, args) => { const { data, error } = await S.sb.rpc(fn, args || {}); if (error) throw new Error(error.message); return data; };
+const must = r => { if (r.error) throw new Error(r.error.message); return r.data; };
+
+function statusOf(c) {
+  if (c.status === 'blocked') return ['Blocked', 'blocked'];
+  if (!c.active) return ['Expired', 'expired'];
+  const onTrial = (!c.paid_until || c.paid_until < today()) && c.trial_ends >= today();
+  if (onTrial) return ['Trial', 'trial'];
+  if (c.days_left <= 7) return ['Due soon', 'due'];
+  return ['Active', 'active'];
+}
+const planOf = id => S.plans.find(p => p.id === id) || { name: id, monthly_price: 0, max_users: 0 };
+
+/* ---------------- start ---------------- */
+(async function start() {
+  if (!CFG.supabaseUrl || /YOUR/.test(CFG.supabaseUrl + CFG.supabaseAnonKey)) {
+    $('#app').innerHTML = `<div class="login"><div class="box"><h3>Owner panel not set up yet</h3><p class="note">Put your Supabase URL and anon key in <b>config.js</b>, then refresh this page. See the setup guide.</p></div></div>`;
+    return;
+  }
+  S.sb = supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth: { flowType: 'implicit', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  const { data: { session } } = await S.sb.auth.getSession();
+  if (/access_token|type=/.test(location.hash)) history.replaceState(null, '', location.pathname);
+  if (!session) return loginScreen();
+  S.user = session.user;
+  let owner = false;
+  try { owner = await rpc('is_owner'); } catch (e) {}
+  if (!owner) {
+    $('#app').innerHTML = `<div class="login"><div class="box"><h3>Owner access only</h3><p class="note">You are signed in as <b>${esc(S.user.email)}</b>, which is not an owner account. Add this email to the <b>platform_admins</b> table in Supabase, or sign in with the owner email.</p><button class="btn" id="out">Sign out</button><a class="btn" href="${esc(APP_URL)}">Go to Maju ERP</a></div></div>`;
+    $('#out').onclick = signOut; return;
+  }
+  shell(); await reload(); render();
+})();
+
+function loginScreen(msg, create) {
+  $('#app').innerHTML = `<div class="login"><form class="box" id="lf" novalidate>
+    <div style="display:flex;gap:10px;align-items:center"><div class="logo" style="color:#fff">MJ</div><div><b>Maju ERP</b><div class="note">Owner panel</div></div></div>
+    ${create ? '<div class="hint">Create the login for the owner email you put in <b>setup.sql</b>.</div>' : ''}
+    ${msg ? `<div class="err">${esc(msg)}</div>` : ''}
+    <div class="fld"><label>Owner email</label><input name="email" type="email" autocomplete="email" required></div>
+    <div class="fld"><label>Password</label><input name="password" type="password" minlength="6" autocomplete="${create ? 'new-password' : 'current-password'}" required></div>
+    <button class="btn primary" style="height:42px;justify-content:center">${create ? 'Create owner login' : 'Sign in'}</button>
+    <p class="note" style="margin:0">${create ? '<a href="#" id="sw" style="color:var(--acc);font-weight:600">Back to sign in</a>' : 'First time here? <a href="#" id="sw" style="color:var(--acc);font-weight:600">Create your owner login</a>'}</p></form></div>`;
+  $('#sw').onclick = e => { e.preventDefault(); loginScreen('', !create); };
+  $('#lf').onsubmit = async e => {
+    e.preventDefault(); const v = form(e.target);
+    if (create) {
+      if ((v.password || '').length < 6) return loginScreen('Password must be at least 6 characters.', true);
+      const { data, error } = await S.sb.auth.signUp({ email: v.email, password: v.password, options: { emailRedirectTo: location.href.split('#')[0] } });
+      if (error) return loginScreen(error.message, true);
+      if (!data.session) return loginScreen('We sent a confirmation link to ' + v.email + '. Open it, then sign in here.');
+      return location.reload();
+    }
+    const { error } = await S.sb.auth.signInWithPassword({ email: v.email, password: v.password });
+    if (error) return loginScreen(/Invalid login/i.test(error.message) ? 'Wrong email or password.' : /not confirmed/i.test(error.message) ? 'Please open the confirmation link we emailed you first.' : error.message);
+    location.reload();
+  };
+  setTimeout(() => { if (!$('#lf').contains(document.activeElement)) $('#lf input').focus(); }, 20);
+}
+async function signOut() { await S.sb.auth.signOut(); location.reload(); }
+
+function shell() {
+  $('#app').innerHTML = `<header><div class="logo">MJ</div><div><b>Maju ERP</b><small>Owner panel</small></div>
+    <nav>${[['companies', 'Companies'], ['payments', 'Payments'], ['plans', 'Plans & prices'], ['settings', 'Settings']].map(t => `<a href="#${t[0]}" data-tab="${t[0]}">${t[1]}</a>`).join('')}</nav>
+    <div class="who">${esc(S.user.email)} <a class="btn sm" href="${esc(APP_URL)}" style="background:#14262f;border-color:#23404f;color:#fff">Open ERP</a><button id="out">Sign out</button></div></header><main id="main"></main>`;
+  $('#out').onclick = signOut;
+  const fromHash = () => { const t = location.hash.slice(1); if (['companies', 'payments', 'plans', 'settings'].includes(t)) S.tab = t; };
+  fromHash();
+  window.addEventListener('hashchange', () => { fromHash(); render(); });
+}
+async function reload() {
+  const [c, p, s] = await Promise.all([rpc('owner_companies'), S.sb.from('plans').select('*').order('sort'), S.sb.from('platform_settings').select('*').single()]);
+  S.companies = c || []; S.plans = must(p) || []; S.settings = must(s) || {};
+}
+function render() {
+  $$('header nav a').forEach(a => a.classList.toggle('on', a.dataset.tab === S.tab));
+  ({ companies: renderCompanies, payments: renderPayments, plans: renderPlans, settings: renderSettings })[S.tab]();
+}
+
+/* ---------------- Companies ---------------- */
+function renderCompanies() {
+  const cs = S.companies, st = c => statusOf(c)[1];
+  const paidActive = cs.filter(c => st(c) === 'active' || st(c) === 'due');
+  const mrr = paidActive.reduce((a, c) => a + (+planOf(c.plan_id).monthly_price || 0), 0);
+  const month = today().slice(0, 7);
+  const stats = [
+    ['all', 'Companies', cs.length], ['paying', 'Paying', paidActive.length], ['trial', 'On trial', cs.filter(c => st(c) === 'trial').length],
+    ['due', 'Due in 7 days', cs.filter(c => st(c) === 'due' || (st(c) === 'trial' && c.days_left <= 7)).length],
+    ['expired', 'Expired / blocked', cs.filter(c => st(c) === 'expired' || st(c) === 'blocked').length],
+    [null, 'Monthly income (Rs)', money(mrr)]
+  ];
+  const q = S.search.toLowerCase();
+  const rows = cs.filter(c => {
+    const s = st(c);
+    if (S.filter === 'paying' && !(s === 'active' || s === 'due')) return false;
+    if (S.filter === 'trial' && s !== 'trial') return false;
+    if (S.filter === 'due' && !(s === 'due' || (s === 'trial' && c.days_left <= 7))) return false;
+    if (S.filter === 'expired' && !(s === 'expired' || s === 'blocked')) return false;
+    return !q || [c.name, c.contact, c.phone, c.email].some(x => String(x || '').toLowerCase().includes(q));
+  });
+  $('#main').innerHTML = `
+    <div class="head"><h1>Companies</h1><span class="sp"></span><button class="btn primary" id="newCo">+ New company</button></div>
+    <div class="stats">${stats.map(s => `<div class="stat" ${s[0] ? `data-f="${s[0]}"` : ''} style="${S.filter === s[0] ? 'border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)' : ''}"><small>${s[1]}</small><b>${s[2]}</b></div>`).join('')}</div>
+    <div class="card"><div class="pad tools"><input id="srch" placeholder="Search name, contact, phone, email" value="${esc(S.search)}"><span class="note" style="align-self:center">${rows.length} shown</span></div>
+    ${rows.length ? `<div class="tbl-wrap"><table><thead><tr><th>Company</th><th>Plan</th><th class="num">Users</th><th>Status</th><th>Access until</th><th class="num">Days left</th><th>Last payment</th><th class="num">Total paid (Rs)</th><th></th></tr></thead><tbody>
+      ${rows.map(c => { const [lab, cls] = statusOf(c); const p = planOf(c.plan_id); return `<tr>
+        <td><b>${esc(c.name)}</b><small>${esc([c.contact, c.phone].filter(Boolean).join(' · ') || c.email || '')}</small></td>
+        <td>${esc(p.name)}<small>Rs ${money(p.monthly_price)} / month</small></td>
+        <td class="num">${c.users} / ${c.max_users}</td>
+        <td><span class="badge b-${cls}">${lab}</span></td>
+        <td>${fdate(c.access_until)}</td>
+        <td class="num" style="${c.days_left < 0 ? 'color:var(--red)' : c.days_left <= 7 ? 'color:var(--amber)' : ''}">${c.days_left ?? '—'}</td>
+        <td>${fdate(c.last_payment)}</td>
+        <td class="num">${money(c.total_paid)}</td>
+        <td class="acts"><button class="btn sm primary" data-pay="${c.id}">Record payment</button><button class="btn sm" data-view="${c.id}">Open</button></td></tr>`; }).join('')}
+    </tbody></table></div>` : `<div class="empty">${cs.length ? 'No companies match.' : 'No companies yet. Click <b>+ New company</b>, or share your ERP link so companies can start a free trial.'}</div>`}</div>`;
+  $$('[data-f]').forEach(el => el.onclick = () => { S.filter = S.filter === el.dataset.f ? 'all' : el.dataset.f; renderCompanies(); });
+  const sr = $('#srch'); sr.oninput = () => { S.search = sr.value; const pos = sr.selectionStart; renderCompanies(); const n = $('#srch'); n.focus(); n.setSelectionRange(pos, pos); };
+  $('#newCo').onclick = newCompany;
+  $$('[data-pay]').forEach(b => b.onclick = () => recordPayment(S.companies.find(c => c.id === b.dataset.pay)));
+  $$('[data-view]').forEach(b => b.onclick = () => viewCompany(b.dataset.view));
+}
+
+const planOpts = sel => S.plans.filter(p => p.active || p.id === sel).map(p => `<option value="${esc(p.id)}" ${p.id === sel ? 'selected' : ''}>${esc(p.name)} — Rs ${money(p.monthly_price)} / month, ${p.max_users} users</option>`).join('');
+
+function newCompany() {
+  const m = modal('New company', `<div class="grid" id="ncf">
+      <div class="fld w"><label>Company name *</label><input name="name" required></div>
+      <div class="fld"><label>Contact person</label><input name="contact"></div>
+      <div class="fld"><label>Phone / WhatsApp</label><input name="phone"></div>
+      <div class="fld w"><label>Email</label><input name="email" type="email"></div>
+      <div class="fld w"><label>Plan</label><select name="plan">${planOpts('basic')}</select></div>
+      <div class="fld"><label>Free trial days</label><input name="trial" type="number" min="0" value="${S.settings.trial_days ?? 14}"><small>0 = no trial (record a payment to open access)</small></div>
+    </div>`, `<button class="btn" data-close>Cancel</button><button class="btn primary" id="ncSave">Create company</button>`);
+  $('#ncSave', m).onclick = async () => {
+    const v = form($('#ncf', m)); if (!v.name) return toast('Enter the company name', 'err');
+    const b = $('#ncSave', m); b.disabled = true;
+    try {
+      const c = await rpc('owner_create_company', { p_name: v.name, p_contact: v.contact, p_phone: v.phone, p_email: v.email, p_plan: v.plan, p_trial_days: +v.trial || 0 });
+      await reload(); render(); showCodes(c.id, true);
+    } catch (e) { toast(e.message, 'err'); b.disabled = false; }
+  };
+}
+
+function inviteText(c, admin) {
+  return admin
+    ? `Assalam o Alaikum${c.contact ? ' ' + c.contact : ''},\n\nYour Maju ERP account for ${c.name} is ready.\n\n1. Open ${APP_URL}\n2. Click "Join company"\n3. Enter company code: ${c.admin_code}\n4. Enter your name, email and a password.\n\nThis code makes you the company administrator. After signing in, go to Settings → Users & Subscription to add your staff.`
+    : `You are invited to use Maju ERP for ${c.name}.\n1. Open ${APP_URL}\n2. Click "Join company"\n3. Enter company code: ${c.join_code}\n4. Create your login with your own email and password.`;
+}
+function showCodes(id, fresh) {
+  const c = S.companies.find(x => x.id === id); if (!c) return;
+  const m = modal(fresh ? 'Company created — send the login details' : 'Login codes · ' + c.name, `
+    ${fresh ? `<div class="hint" style="margin-bottom:14px"><b>${esc(c.name)}</b> is ready. Send the administrator code below to the company owner. They use it once to create their administrator login, then add their own staff.</div>` : ''}
+    <div class="grid">
+      <div class="fld"><label>Administrator code</label><div><span class="code">${esc(c.admin_code)}</span></div><small>Use for the company's owner / manager</small></div>
+      <div class="fld"><label>Staff code</label><div><span class="code">${esc(c.join_code)}</span></div><small>Joins as a normal user</small></div>
+      <div class="fld w"><label>Message to send (WhatsApp / email)</label><textarea rows="9" readonly>${esc(inviteText(c, true))}</textarea></div>
+    </div>`, `<button class="btn" id="cdNew">Make new codes</button><span style="flex:1"></span><button class="btn" data-close>Close</button><button class="btn primary" id="cdCopy">Copy message</button>`);
+  $('#cdCopy', m).onclick = () => copy(inviteText(c, true), 'Message');
+  $('#cdNew', m).onclick = async () => {
+    if (!confirm('Make new codes for ' + c.name + '? The old codes will stop working (existing logins keep working).')) return;
+    try { await rpc('owner_new_codes', { p_company: c.id }); await reload(); render(); showCodes(c.id); toast('New codes made'); } catch (e) { toast(e.message, 'err'); }
+  };
+}
+
+function recordPayment(c) {
+  const p = planOf(c.plan_id);
+  const start = c.paid_until && c.paid_until >= today() ? addDays(c.paid_until, 1) : today();
+  const m = modal('Record payment · ' + c.name, `<div class="grid" id="pf">
+      <div class="fld"><label>Months paid</label><select name="months">${[1, 2, 3, 6, 12].map(n => `<option value="${n}">${n} month${n > 1 ? 's' : ''}</option>`).join('')}</select></div>
+      <div class="fld"><label>Amount received (Rs)</label><input name="amount" type="number" min="0" step="any" value="${+p.monthly_price || 0}"></div>
+      <div class="fld"><label>Payment method</label><select name="method">${METHODS.map(x => `<option>${x}</option>`).join('')}</select></div>
+      <div class="fld"><label>Transaction / receipt no.</label><input name="reference"></div>
+      <div class="fld"><label>Received on</label><input name="paid_on" type="date" value="${today()}"></div>
+      <div class="fld"><label>Access will run</label><div id="pfPeriod" style="padding-top:8px;font-weight:650"></div></div>
+      <div class="fld w"><small>Plan: ${esc(p.name)} — Rs ${money(p.monthly_price)} / month. ${c.paid_until ? 'Currently paid until ' + fdate(c.paid_until) + '.' : 'No payment recorded before.'}</small></div>
+    </div>`, `<button class="btn" data-close>Cancel</button><button class="btn primary" id="pfSave">Save payment</button>`);
+  const months = $('[name=months]', m), amount = $('[name=amount]', m);
+  const upd = () => { $('#pfPeriod', m).textContent = `${fdate(start)} → ${fdate(addMonths(start, +months.value))}`; };
+  months.onchange = () => { amount.value = (+p.monthly_price || 0) * +months.value; upd(); }; upd();
+  $('#pfSave', m).onclick = async () => {
+    const v = form($('#pf', m)); if (!(+v.amount >= 0) || v.amount === '') return toast('Enter the amount', 'err');
+    const b = $('#pfSave', m); b.disabled = true;
+    try {
+      const r = await rpc('owner_record_payment', { p_company: c.id, p_amount: +v.amount, p_months: +v.months, p_method: v.method, p_reference: v.reference, p_paid_on: v.paid_on || today() });
+      closeModal(); toast(`${c.name}: access extended to ${fdate(r.period_to)}`); await reload(); render();
+    } catch (e) { toast(e.message, 'err'); b.disabled = false; }
+  };
+}
+
+async function viewCompany(id) {
+  const c = S.companies.find(x => x.id === id); if (!c) return;
+  const [mem, pay] = await Promise.all([
+    S.sb.from('company_members').select('email,full_name,role,active,created_at').eq('company_id', id).order('created_at'),
+    S.sb.from('payments').select('*').eq('company_id', id).order('paid_on', { ascending: false })
+  ]);
+  const members = mem.data || [], pays = pay.data || [];
+  const [lab, cls] = statusOf(c);
+  const m = modal(c.name, `
+    <div class="tabs2"><button class="btn sm primary" data-t="info">Details</button><button class="btn sm" data-t="users">Users (${members.length})</button><button class="btn sm" data-t="pays">Payments (${pays.length})</button></div>
+    <div data-p="info"><div class="grid" id="ef">
+      <div class="fld w"><label>Company name</label><input name="name" value="${esc(c.name)}"></div>
+      <div class="fld"><label>Contact person</label><input name="contact" value="${esc(c.contact)}"></div>
+      <div class="fld"><label>Phone / WhatsApp</label><input name="phone" value="${esc(c.phone)}"></div>
+      <div class="fld w"><label>Email</label><input name="email" value="${esc(c.email)}"></div>
+      <div class="fld w"><label>Plan</label><select name="plan_id">${planOpts(c.plan_id)}</select></div>
+      <div class="fld"><label>Users allowed</label><input name="max_users" type="number" min="1" value="${c.max_users}"><small>${c.users} in use</small></div>
+      <div class="fld"><label>Account status</label><select name="status"><option value="active" ${c.status === 'active' ? 'selected' : ''}>Active</option><option value="blocked" ${c.status === 'blocked' ? 'selected' : ''}>Blocked (on hold)</option></select><small>Now: <span class="badge b-${cls}">${lab}</span></small></div>
+      <div class="fld"><label>Free trial ends</label><input name="trial_ends" type="date" value="${c.trial_ends || ''}"></div>
+      <div class="fld"><label>Paid until</label><input name="paid_until" type="date" value="${c.paid_until || ''}"><small>Normally set by "Record payment"</small></div>
+      <div class="fld w"><label>Notes (only you see these)</label><textarea name="notes" rows="2">${esc(c.notes)}</textarea></div>
+      <div class="fld w"><small>Opened ${fdate(c.created_at)} · data last saved ${c.data_updated ? new Date(c.data_updated).toLocaleString() : 'never'}</small></div>
+    </div></div>
+    <div data-p="users" hidden>${members.length ? `<table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Since</th></tr></thead><tbody>${members.map(u => `<tr><td>${esc(u.full_name || '—')}</td><td>${esc(u.email)}</td><td><span class="badge b-${u.role}">${u.role === 'admin' ? 'Administrator' : 'User'}</span></td><td>${u.active ? 'Active' : 'Switched off'}</td><td>${fdate(u.created_at)}</td></tr>`).join('')}</tbody></table>` : `<div class="empty">No logins yet. Send them the administrator code.</div>`}</div>
+    <div data-p="pays" hidden>${pays.length ? `<table><thead><tr><th>Received</th><th class="num">Amount (Rs)</th><th class="num">Months</th><th>Period</th><th>Method</th><th>Reference</th></tr></thead><tbody>${pays.map(p => `<tr><td>${fdate(p.paid_on)}</td><td class="num">${money(p.amount)}</td><td class="num">${p.months}</td><td>${fdate(p.period_from)} → ${fdate(p.period_to)}</td><td>${esc(p.method)}</td><td>${esc(p.reference)}</td></tr>`).join('')}</tbody></table>` : `<div class="empty">No payments recorded yet.</div>`}</div>`,
+    `<button class="btn" id="vCodes">Login codes</button><button class="btn" id="vPay">Record payment</button><span style="flex:1"></span><button class="btn" data-close>Close</button><button class="btn primary" id="vSave">Save changes</button>`, true);
+  $$('[data-t]', m).forEach(b => b.onclick = () => { $$('[data-t]', m).forEach(x => x.classList.toggle('primary', x === b)); $$('[data-p]', m).forEach(p => p.hidden = p.dataset.p !== b.dataset.t); });
+  const planSel = $('[name=plan_id]', m);
+  planSel.onchange = () => { $('[name=max_users]', m).value = planOf(planSel.value).max_users; };
+  $('#vCodes', m).onclick = () => showCodes(id);
+  $('#vPay', m).onclick = () => recordPayment(c);
+  $('#vSave', m).onclick = async () => {
+    const v = form($('#ef', m));
+    if (!v.name) return toast('Company name is required', 'err');
+    const upd = { name: v.name, contact: v.contact || null, phone: v.phone || null, email: v.email || null, plan_id: v.plan_id, max_users: Math.max(1, +v.max_users || 1), status: v.status, trial_ends: v.trial_ends || null, paid_until: v.paid_until || null, notes: v.notes || null };
+    const { error } = await S.sb.from('companies').update(upd).eq('id', id);
+    if (error) return toast(error.message, 'err');
+    closeModal(); toast('Saved'); await reload(); render();
+  };
+}
+
+/* ---------------- Payments ---------------- */
+async function renderPayments() {
+  $('#main').innerHTML = `<div class="head"><h1>Payments received</h1></div><div class="card"><div class="empty">Loading…</div></div>`;
+  const r = await S.sb.from('payments').select('*').order('paid_on', { ascending: false }).order('created_at', { ascending: false });
+  if (S.tab !== 'payments') return;
+  const all = r.data || [], name = id => (S.companies.find(c => c.id === id) || {}).name || '—';
+  const months = [...new Set(all.map(p => p.paid_on.slice(0, 7)))];
+  S.payMonth = S.payMonth ?? '';
+  const rows = all.filter(p => !S.payMonth || p.paid_on.startsWith(S.payMonth));
+  const total = rows.reduce((a, p) => a + (+p.amount || 0), 0);
+  const label = ym => { const [y, m] = ym.split('-'); return 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[+m - 1] + ' ' + y; };
+  $('#main').innerHTML = `<div class="head"><h1>Payments received</h1><span class="sp"></span><button class="btn" id="csv">Download CSV</button></div>
+    <div class="stats"><div class="stat"><small>${S.payMonth ? label(S.payMonth) : 'All time'}</small><b>Rs ${money(total)}</b></div><div class="stat"><small>Payments</small><b>${rows.length}</b></div></div>
+    <div class="card"><div class="pad tools"><select id="pm"><option value="">All months</option>${months.map(m => `<option value="${m}" ${m === S.payMonth ? 'selected' : ''}>${label(m)}</option>`).join('')}</select></div>
+    ${rows.length ? `<div class="tbl-wrap"><table id="ptbl"><thead><tr><th>Received</th><th>Company</th><th class="num">Amount (Rs)</th><th class="num">Months</th><th>Access period</th><th>Method</th><th>Reference</th></tr></thead><tbody>
+      ${rows.map(p => `<tr><td>${fdate(p.paid_on)}</td><td>${esc(name(p.company_id))}</td><td class="num">${money(p.amount)}</td><td class="num">${p.months}</td><td>${fdate(p.period_from)} → ${fdate(p.period_to)}</td><td>${esc(p.method)}</td><td>${esc(p.reference)}</td></tr>`).join('')}
+    </tbody></table></div>` : `<div class="empty">No payments yet. Use <b>Record payment</b> on the Companies page when a company pays you.</div>`}</div>`;
+  $('#pm').onchange = e => { S.payMonth = e.target.value; renderPayments(); };
+  $('#csv').onclick = () => {
+    const lines = [['Received', 'Company', 'Amount', 'Months', 'From', 'To', 'Method', 'Reference'], ...rows.map(p => [p.paid_on, name(p.company_id), p.amount, p.months, p.period_from, p.period_to, p.method, p.reference])]
+      .map(r => r.map(x => `"${String(x ?? '').replace(/"/g, '""')}"`).join(','));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv' })); a.download = `maju-erp-payments-${S.payMonth || 'all'}.csv`; a.click();
+  };
+}
+
+/* ---------------- Plans ---------------- */
+function renderPlans() {
+  $('#main').innerHTML = `<div class="head"><h1>Plans & prices</h1><span class="sp"></span><button class="btn primary" id="np">+ New plan</button></div>
+    <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Plan</th><th class="num">Price per month (Rs)</th><th class="num">Users allowed</th><th class="num">Companies</th><th>Offered</th><th></th></tr></thead><tbody>
+    ${S.plans.map(p => `<tr><td><b>${esc(p.name)}</b><small>${esc(p.id)}</small></td><td class="num">${money(p.monthly_price)}</td><td class="num">${p.max_users}</td><td class="num">${S.companies.filter(c => c.plan_id === p.id).length}</td><td>${p.active ? 'Yes' : 'No'}</td><td class="acts"><button class="btn sm" data-ep="${esc(p.id)}">Edit</button></td></tr>`).join('')}
+    </tbody></table></div></div>
+    <p class="note">The <b>Basic</b> plan is given to companies that start a free trial themselves. Changing a plan's price does not change what a company has already paid. Changing "users allowed" here applies to new companies; for an existing company change it on the company's page.</p>`;
+  $('#np').onclick = () => editPlan();
+  $$('[data-ep]').forEach(b => b.onclick = () => editPlan(S.plans.find(p => p.id === b.dataset.ep)));
+}
+function editPlan(p) {
+  const isNew = !p; p = p || { id: '', name: '', monthly_price: 0, max_users: 3, active: true, sort: S.plans.length + 1 };
+  const m = modal(isNew ? 'New plan' : 'Edit plan · ' + p.name, `<div class="grid" id="plf">
+    <div class="fld"><label>Plan name</label><input name="name" value="${esc(p.name)}"></div>
+    <div class="fld"><label>Short code</label><input name="id" value="${esc(p.id)}" ${isNew ? '' : 'disabled'} placeholder="e.g. gold"></div>
+    <div class="fld"><label>Price per month (Rs)</label><input name="monthly_price" type="number" min="0" value="${p.monthly_price}"></div>
+    <div class="fld"><label>Users allowed</label><input name="max_users" type="number" min="1" value="${p.max_users}"></div>
+    <div class="fld w"><label><input type="checkbox" name="active" ${p.active ? 'checked' : ''} style="width:auto;height:auto"> Offer this plan</label></div></div>`,
+    `<button class="btn" data-close>Cancel</button><button class="btn primary" id="plSave">Save</button>`);
+  $('#plSave', m).onclick = async () => {
+    const v = form($('#plf', m));
+    const id = isNew ? v.id.toLowerCase().replace(/[^a-z0-9_-]/g, '') : p.id;
+    if (!id || !v.name) return toast('Enter a plan name and short code', 'err');
+    const row = { id, name: v.name, monthly_price: +v.monthly_price || 0, max_users: Math.max(1, +v.max_users || 1), active: v.active, sort: p.sort };
+    const { error } = isNew ? await S.sb.from('plans').insert(row) : await S.sb.from('plans').update(row).eq('id', id);
+    if (error) return toast(error.message, 'err');
+    closeModal(); toast('Plan saved'); await reload(); render();
+  };
+}
+
+/* ---------------- Settings ---------------- */
+function renderSettings() {
+  const s = S.settings;
+  $('#main').innerHTML = `<div class="head"><h1>Settings</h1></div>
+    <div class="card pad" style="max-width:760px"><div class="grid" id="sf">
+      <div class="fld w"><label>How customers should pay you</label><textarea name="payment_instructions" rows="7" placeholder="Bank: …  Account title: …  IBAN: …&#10;JazzCash / Easypaisa: 03xx-xxxxxxx (Name)&#10;Send the receipt on WhatsApp 03xx-xxxxxxx">${esc(s.payment_instructions)}</textarea><small>Shown on each company's Users & Subscription page and on the screen they see when their subscription ends.</small></div>
+      <div class="fld w"><label>Support contact (phone / WhatsApp / email)</label><input name="support_contact" value="${esc(s.support_contact)}"></div>
+      <div class="fld"><label>Free trial length (days)</label><input name="trial_days" type="number" min="0" value="${s.trial_days ?? 14}"></div>
+      <div class="fld"><label>&nbsp;</label><label style="font-weight:500"><input type="checkbox" name="allow_self_signup" ${s.allow_self_signup ? 'checked' : ''} style="width:auto;height:auto"> Let companies sign up for a free trial themselves</label></div>
+      <div class="fld w"><button class="btn primary" id="ss" style="justify-self:start">Save settings</button></div>
+    </div></div>
+    <div class="card pad" style="max-width:760px"><h3>Your links</h3><p></p><div class="kv"><span>Customer sign-in</span><b>${esc(APP_URL)}</b><span>Owner panel</span><b>${esc(location.href.split('#')[0])}</b></div>
+    <p class="note">Share the customer link on your website, LinkedIn or WhatsApp. Keep the owner panel link to yourself — only owner emails can open it anyway.</p></div>`;
+  $('#ss').onclick = async () => {
+    const v = form($('#sf'));
+    const { error } = await S.sb.from('platform_settings').update({ payment_instructions: v.payment_instructions, support_contact: v.support_contact, trial_days: Math.max(0, +v.trial_days || 0), allow_self_signup: v.allow_self_signup }).eq('id', 1);
+    if (error) return toast(error.message, 'err');
+    toast('Settings saved'); await reload();
+  };
+}
+</script>
+</body>
+</html>
