@@ -6,6 +6,9 @@
 <title>Maju ERP</title>
 <meta name="description" content="Maju ERP — accounting, sales, purchases and inventory.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f766e'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='700' font-size='13' fill='white' text-anchor='middle'%3EMJ%3C/text%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloud.js"></script>
 <style>
 :root{
   --bg:#f4f6f8; --card:#fff; --ink:#18212b; --muted:#667385; --line:#e3e8ee; --line2:#eef2f5;
@@ -320,10 +323,12 @@ tr.voided td{color:#9aa5b1;text-decoration:line-through}tr.voided td.acts,tr.voi
 'use strict';
 /* =========================================================
    Maju ERP — core: utilities, storage, ledger
-   All data lives in the browser (localStorage).
+   Data is saved online (cloud.js + Supabase) when config.js has keys,
+   otherwise in this browser (localStorage).
    ========================================================= */
 const APP = { name: 'Maju ERP', short: 'Maju ERP', version: '2.2.0' };
 const STORE_KEY = 'majuErp.data.v1';
+const CLOUD = () => !!(window.Cloud && window.Cloud.enabled);
 
 const U = {
   uid: () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
@@ -440,7 +445,10 @@ function defaultData() {
 const DB = {
   data: null,
   load() {
-    try { const raw = localStorage.getItem(STORE_KEY); this.data = raw ? JSON.parse(raw) : defaultData(); }
+    try {
+      if (CLOUD()) this.data = this.data || (Cloud.data ? JSON.parse(JSON.stringify(Cloud.data)) : defaultData());
+      else { const raw = localStorage.getItem(STORE_KEY); this.data = raw ? JSON.parse(raw) : defaultData(); }
+    }
     catch (e) { this.data = defaultData(); }
     const d = defaultData();
     for (const k in d) if (this.data[k] === undefined) this.data[k] = d[k];
@@ -452,7 +460,8 @@ const DB = {
     Ledger.invalidate();
   },
   save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(this.data)); }
+    if (CLOUD()) Cloud.queueSave();
+    else try { localStorage.setItem(STORE_KEY, JSON.stringify(this.data)); }
     catch (e) { alertBox('Could not save: browser storage is full or blocked.'); }
     Ledger.invalidate();
   },
@@ -876,19 +885,20 @@ function renderShell() {
   <aside id="sidebar">
     <div class="brand"><div class="logo">MJ</div><div><b>Maju ERP</b><small>Accounts & Inventory</small></div></div>
     <nav id="nav"></nav>
-    <div class="side-foot">v${APP.version} · data saved in this browser</div>
+    <div class="side-foot">v${APP.version} · ${CLOUD() ? 'data saved online' : 'data saved in this browser'}</div>
   </aside>
   <div id="wrap">
     <header id="topbar">
       <button class="icon-btn" id="menuBtn" aria-label="Menu">${icon('menu')}</button>
       <div id="crumbs"></div>
-      <div class="top-right"><label class="branch-sw" title="Switch branch">${icon('bank')}<select id="brSel"></select></label><span class="co" id="coName"></span><span class="pill">${U.fdate(U.today())}</span></div>
+      <div class="top-right">${CLOUD() ? Cloud.barHtml() : ''}<label class="branch-sw" title="Switch branch">${icon('bank')}<select id="brSel"></select></label><span class="co" id="coName"></span><span class="pill">${U.fdate(U.today())}</span></div>
     </header>
     <main id="main"></main>
   </div>
   <div id="modalRoot"></div><div id="toasts"></div>`;
   $('#menuBtn').onclick = () => document.body.classList.toggle('nav-open');
   renderNav();
+  if (CLOUD()) Cloud.renderBar();
 }
 function renderNav() {
   const cur = location.hash || '#/dashboard';
@@ -1275,10 +1285,11 @@ route('/settings/backup', () => {
   const d = DB.data;
   const count = ['customers', 'suppliers', 'items', 'invoices', 'bills', 'receipts', 'payments', 'vouchers', 'journals'].map(k => `<li><b>${d[k].length}</b> ${k}</li>`).join('');
   page('Backup & Restore', `<div class="grid-cards">
-    <div class="card pad"><h3>Download backup</h3><p class="muted">Your data is stored only in this browser. Download a backup regularly and keep it safe — you can restore it on any computer.</p><ul class="counts">${count}</ul><button class="btn primary" id="bDl">${icon('dl')} Download backup (.json)</button></div>
+    <div class="card pad"><h3>Download backup</h3><p class="muted">${CLOUD() ? 'Your data is saved online. You can also download a copy to keep on your computer.' : 'Your data is stored only in this browser. Download a backup regularly and keep it safe — you can restore it on any computer.'}</p><ul class="counts">${count}</ul><button class="btn primary" id="bDl">${icon('dl')} Download backup (.json)</button></div>
     <div class="card pad"><h3>Restore from backup</h3><p class="muted">Replaces all current data with the backup file.</p><input type="file" id="bFile" accept=".json,application/json"><div class="mt"><button class="btn" id="bUp">Restore</button></div></div>
     <div class="card pad"><h3>Start fresh</h3><p class="muted">Erase every record and go back to the default chart of accounts. Download a backup first.</p><button class="btn danger" id="bReset">Erase all data</button></div>
   </div>`);
+  if (CLOUD() && Cloud.acct && Cloud.acct.member.role !== 'admin') { ['#bUp', '#bReset'].forEach(id => { const b = $(id); if (b) { b.disabled = true; b.title = 'Only the company administrator can do this'; } }); }
   $('#bDl').onclick = () => {
     const blob = new Blob([JSON.stringify(d, null, 1)], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `maju-erp-backup-${U.today()}.json`; a.click();
@@ -2800,7 +2811,7 @@ function printTradeDoc(kind, doc, variant) {
 function logActivity(key, id, what) {
   const d = DB.get(key, id); if (!d) return;
   d.log = (d.log || []).concat({ at: new Date().toISOString(), what });
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(DB.data)); } catch (e) {}
+  if (CLOUD()) Cloud.queueSave(); else try { localStorage.setItem(STORE_KEY, JSON.stringify(DB.data)); } catch (e) {}
 }
 
 /* ---------- image helper (resized to keep storage small) ---------- */
@@ -2982,8 +2993,10 @@ route('/v/:kind/:id', (kind, id, qs) => {
 <script>
 'use strict';
 /* Boot */
-(function () {
+(async function () {
+  if (CLOUD()) await Cloud.start();
   DB.load();
+  if (CLOUD()) Cloud.afterLoad();
   const n = runRecurring();
   renderShell();
   window.addEventListener('hashchange', navigate);
